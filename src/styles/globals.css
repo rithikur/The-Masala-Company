@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600;1,700;1,900&family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+
+/* ─────────────────────────────────────────
+   CSS Custom Properties (Design Tokens)
+───────────────────────────────────────── */
+@theme {
+  /* Spice Browns */
+  --color-spice-brown:   #2C1810;
+  --color-spice-dark:    #1A0F0A;
+  --color-spice-medium:  #4A2C1A;
+
+  /* Turmeric Golds */
+  --color-turmeric:      #C8922A;
+  --color-turmeric-light:#E5B84A;
+  --color-turmeric-pale: #F5DFA0;
+
+  /* Saffron */
+  --color-saffron:       #E8751A;
+  --color-saffron-dark:  #C4621A;
+
+  /* Creams */
+  --color-cream:         #FAF6EE;
+  --color-cream-dark:    #EDE7D9;
+  --color-cream-warm:    #F5EDD8;
+
+  /* Charcoal */
+  --color-charcoal:      #1C1C1E;
+  --color-charcoal-soft: #3A3A3C;
+  --color-charcoal-muted:#6C6C70;
+
+  /* Typography */
+  --font-display:  'Playfair Display', Georgia, serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+  --font-accent:   'Cormorant Garamond', Georgia, serif;
+
+  /* Shadows */
+  --shadow-luxury: 0 4px 40px rgba(44, 24, 16, 0.12);
+  --shadow-gold:   0 0 0 2px rgba(200, 146, 42, 0.4);
+  --shadow-card:   0 2px 20px rgba(44, 24, 16, 0.08);
+  --shadow-hover:  0 8px 40px rgba(44, 24, 16, 0.16);
+
+  /* Spacing overrides from config */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+  --spacing-100: 25rem;
+  --spacing-112: 28rem;
+  --spacing-128: 32rem;
+
+  /* Radius overrides from config */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+}
+
+/* ─────────────────────────────────────────
+   Base Reset
+───────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────
+   Global Transition
+───────────────────────────────────────── */
+* {
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+/* ─────────────────────────────────────────
+   Custom Scrollbar
+───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-spice-brown);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-turmeric);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-turmeric-light);
+}
+
+/* ─────────────────────────────────────────
+   Text Selection
+───────────────────────────────────────── */
+::selection {
+  background-color: var(--color-turmeric);
+  color: var(--color-cream);
+}
+
+::-moz-selection {
+  background-color: var(--color-turmeric);
+  color: var(--color-cream);
+}
+
+/* ─────────────────────────────────────────
+   Utility Layer
+───────────────────────────────────────── */
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-accent  { font-family: var(--font-accent); }
+
+  .text-balance { text-wrap: balance; }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ─────────────────────────────────────────
+   Admin Design Tokens
+   ───────────────────────────────────────── */
+.admin-layout {
+  --admin-sidebar-bg: #1A0F0A;
+  --admin-sidebar-text: rgba(250, 246, 238, 0.75);
+  --admin-sidebar-active: #C8922A;
+  --admin-header-bg: #FFFFFF;
+  --admin-content-bg: #F5F4F1;
+  --admin-card-bg: #FFFFFF;
+  --admin-border: #E8E3DA;
+}

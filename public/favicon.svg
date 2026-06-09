@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="2" fill="#2C1810"/>
+  <!-- Stylised M letterform in turmeric gold -->
+  <text
+    x="32"
+    y="46"
+    font-family="Georgia, serif"
+    font-size="36"
+    font-weight="700"
+    fill="#C8922A"
+    text-anchor="middle"
+    dominant-baseline="auto"
+  >M</text>
+  <!-- Decorative top line -->
+  <line x1="10" y1="10" x2="54" y2="10" stroke="#C8922A" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Decorative bottom line -->
+  <line x1="10" y1="56" x2="54" y2="56" stroke="#C8922A" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

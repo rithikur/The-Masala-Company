@@ -1,0 +1,3 @@
+# Fonts directory
+# Place custom font files here (.woff2, .woff, .ttf)
+# Google Fonts are loaded via CSS @import in globals.css
