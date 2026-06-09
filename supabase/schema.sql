@@ -221,6 +221,10 @@ VALUES (
 -- =============================================================================
 
 -- product-images: public read, admin write
+DROP POLICY IF EXISTS product_images_public_read ON storage.objects;
+DROP POLICY IF EXISTS product_images_admin_insert ON storage.objects;
+DROP POLICY IF EXISTS product_images_admin_update ON storage.objects;
+DROP POLICY IF EXISTS product_images_admin_delete ON storage.objects;
 CREATE POLICY "product_images_public_read"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'product-images');
@@ -238,6 +242,10 @@ CREATE POLICY "product_images_admin_delete"
   USING (bucket_id = 'product-images' AND public.is_admin());
 
 -- category-images: public read, admin write
+DROP POLICY IF EXISTS category_images_public_read   ON storage.objects;
+DROP POLICY IF EXISTS category_images_admin_insert  ON storage.objects;
+DROP POLICY IF EXISTS category_images_admin_update  ON storage.objects;
+DROP POLICY IF EXISTS category_images_admin_delete  ON storage.objects;
 CREATE POLICY "category_images_public_read"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'category-images');
