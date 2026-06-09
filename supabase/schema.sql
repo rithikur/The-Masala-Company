@@ -5,7 +5,7 @@
 -- Drop existing trigger if it exists
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS public.handle_new_user();
-DROP FUNCTION IF EXISTS public.is_admin();
+DROP FUNCTION IF EXISTS public.is_admin() CASCADE;
 
 -- Drop existing tables to ensure clean setup
 DROP TABLE IF EXISTS public.product_categories CASCADE;
