@@ -111,7 +111,7 @@ const Home = () => {
       gsap.set(centerCardRef.current, { x: "18vw", y: "0px", opacity: 1, scale: 1 })
       gsap.set(cardamomRef.current, { x: "18vw", y: "0px", scale: 1, opacity: 1, rotation: 0 })
       gsap.set(cinnamonRef.current, { x: "-60vw", y: "10vh", scale: 1, opacity: 0, rotation: -65 })
-      gsap.set(heroImageRef.current, { opacity: 0.08, scale: 1.1 })
+      gsap.set(heroImageRef.current, { opacity: 0.22, scale: 1.1 })
       
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -134,7 +134,7 @@ const Home = () => {
       
       // Background shifts to Cream Dark (soil) & texture fades slightly for text readability
       tl.to(heroPinRef.current, { backgroundColor: "#EDE7D9", duration: 1.5 }, 0)
-      tl.to(heroImageRef.current, { opacity: 0.05, duration: 1.5 }, 0)
+      tl.to(heroImageRef.current, { opacity: 0.15, duration: 1.5 }, 0)
       
       // Chapter 1 text fades in on the left side
       tl.fromTo(chapter1Ref.current, { x: "-22vw", y: "30px", opacity: 0 }, { x: "-22vw", y: "0px", opacity: 1, duration: 1.2 }, 0.3)
@@ -164,7 +164,7 @@ const Home = () => {
       tl.to(chapter2Ref.current, { opacity: 0, y: "-30px", duration: 1 }, 3.0)
       
       // Background spices image fades in slightly more for visual texture
-      tl.to(heroImageRef.current, { opacity: 0.09, scale: 1.2, duration: 2 }, 3.0)
+      tl.to(heroImageRef.current, { opacity: 0.25, scale: 1.2, duration: 2 }, 3.0)
       
       // Final centered text fades in
       tl.fromTo(finalTextRef.current, { x: 0, y: "40px", opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 1.8 }, 3.3)
@@ -181,7 +181,7 @@ const Home = () => {
       gsap.set(centerCardRef.current, { x: 0, y: "12vh", opacity: 1, scale: 1 })
       gsap.set(cardamomRef.current, { x: 0, y: "12vh", scale: 1, opacity: 1, rotation: 0 })
       gsap.set(cinnamonRef.current, { x: 0, y: "65vh", scale: 1, opacity: 0, rotation: -65 })
-      gsap.set(heroImageRef.current, { opacity: 0.06, scale: 1.1 })
+      gsap.set(heroImageRef.current, { opacity: 0.18, scale: 1.1 })
       
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -203,7 +203,7 @@ const Home = () => {
       
       // Background shifts to Cream Dark
       tl.to(heroPinRef.current, { backgroundColor: "#EDE7D9", duration: 1.5 }, 0)
-      tl.to(heroImageRef.current, { opacity: 0.04, duration: 1.5 }, 0)
+      tl.to(heroImageRef.current, { opacity: 0.12, duration: 1.5 }, 0)
       
       // Chapter 1 text fades in below cardamom
       tl.fromTo(chapter1Ref.current, { x: 0, y: "18vh", opacity: 0 }, { x: 0, y: "11vh", opacity: 1, duration: 1.2 }, 0.3)
@@ -234,7 +234,7 @@ const Home = () => {
       tl.to(chapter2Ref.current, { opacity: 0, y: "0vh", duration: 1 }, 3.0)
       
       // Background spices image fades in behind at low opacity
-      tl.to(heroImageRef.current, { opacity: 0.07, scale: 1.15, duration: 2 }, 3.0)
+      tl.to(heroImageRef.current, { opacity: 0.20, scale: 1.15, duration: 2 }, 3.0)
       
       // Final centered text fades in in the bottom half
       tl.fromTo(finalTextRef.current, { x: 0, y: "18vh", opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 1.8 }, 3.3)
@@ -284,7 +284,7 @@ const Home = () => {
           {/* Background Textured Spice Image (Visible from start at low opacity) */}
           <div 
             ref={heroImageRef}
-            className="absolute inset-0 w-full h-full opacity-[0.08] mix-blend-multiply pointer-events-none transform scale-110"
+            className="absolute inset-0 w-full h-full opacity-[0.22] mix-blend-multiply pointer-events-none transform scale-110"
             style={{ 
               backgroundImage: "url('/images/hero_spices_bg.png')",
               backgroundSize: "cover",
