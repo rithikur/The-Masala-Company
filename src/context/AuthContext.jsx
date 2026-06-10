@@ -59,18 +59,6 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = async (email, password) => {
-    if (email === 'admin@themasalacompany.com' && password === 'themasalacompany') {
-      const user = {
-        id: 'admin-id-123',
-        email: 'admin@themasalacompany.com',
-        role: 'admin',
-        first_name: 'Admin',
-        last_name: 'User'
-      }
-      localStorage.setItem('masala_access_token', 'mock-admin-token')
-      setState({ user, isAuthenticated: true, isLoading: false, token: 'mock-admin-token' })
-      return user
-    }
     const response = await api.post('/api/auth/login', { email, password })
     const { user, access_token, refresh_token } = response.data.data
     localStorage.setItem('masala_access_token', access_token)

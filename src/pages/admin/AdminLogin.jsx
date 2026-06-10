@@ -36,37 +36,54 @@ const AdminLogin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-4 font-body">
-      <div className="w-full max-w-md bg-white border border-cream-dark p-10 rounded-none shadow-xs">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-4 font-body relative overflow-hidden">
+      {/* Background Textured Spice Image overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.04] mix-blend-multiply pointer-events-none transform scale-105"
+        style={{ 
+          backgroundImage: "url('/images/hero_spices_bg.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}
+      />
+
+      <div className="w-full max-w-md bg-white/95 backdrop-blur-md border border-cream-dark p-10 relative shadow-luxury">
+        {/* Editorial top accent line */}
+        <div className="absolute top-0 left-0 w-full h-[4px] bg-turmeric" />
+        
+        {/* Decorative thin inner frame */}
+        <div className="absolute inset-2 border border-cream-dark/30 pointer-events-none" />
         
         {/* Editorial Brand Header */}
-        <div className="text-center mb-8">
-          <span className="text-[10px] uppercase tracking-widest text-ochre font-bold">Internal Access</span>
-          <h2 className="font-serif text-2xl text-charcoal-dark font-bold mt-2">The Masala Company</h2>
-          <p className="text-xs text-gray-400 mt-1">Administrative Control Center</p>
+        <div className="text-center mb-8 relative z-10">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-turmeric font-bold">Internal Access</span>
+          <h2 className="font-display text-2xl text-spice-brown uppercase tracking-wider font-semibold mt-2.5">The Masala Co.</h2>
+          <p className="font-accent italic text-xs text-spice-medium/70 mt-1.5">Administrative Control Center</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-500 uppercase tracking-wider">Admin Email</label>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6 relative z-10">
+          <div className="flex flex-col gap-2">
+            <label className="text-[9px] text-spice-brown/60 uppercase tracking-[0.25em] font-semibold">Admin Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border border-gray-200 p-3 text-sm outline-none focus:border-spice-brown rounded-none transition-colors"
+              className="w-full bg-transparent border-b border-cream-dark focus:border-turmeric py-3 text-sm text-spice-brown outline-none transition-all duration-300 placeholder:text-spice-brown/20 font-body rounded-none"
               placeholder="admin@themasalacompany.com"
+              autoComplete="username"
               required
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-500 uppercase tracking-wider">Secure Password</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-[9px] text-spice-brown/60 uppercase tracking-[0.25em] font-semibold">Secure Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-200 p-3 text-sm outline-none focus:border-spice-brown rounded-none transition-colors"
+              className="w-full bg-transparent border-b border-cream-dark focus:border-turmeric py-3 text-sm text-spice-brown outline-none transition-all duration-300 placeholder:text-spice-brown/20 font-body rounded-none"
               placeholder="••••••••"
+              autoComplete="current-password"
               required
             />
           </div>
@@ -74,18 +91,17 @@ const AdminLogin = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-charcoal-dark text-cream p-3 text-xs uppercase tracking-widest font-bold hover:bg-spice-brown transition-colors cursor-pointer rounded-none disabled:opacity-55"
+            className="w-full bg-spice-brown hover:bg-spice-medium text-cream py-4 mt-4 text-[10px] uppercase tracking-[0.3em] font-bold transition-all duration-300 shadow-sm hover:shadow-luxury cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none rounded-none"
           >
-            {submitting ? "Signing in..." : "Enter Dashboard"}
+            {submitting ? "Authenticating..." : "Enter Dashboard"}
           </button>
         </form>
 
-        <div className="mt-8 border-t border-gray-100 pt-4 text-center">
-          <p className="text-[10px] text-gray-400 font-mono mb-4">
-            Default credentials: <br/>
-            <span className="text-charcoal-soft font-semibold">admin@themasalacompany.com</span> / <span className="text-charcoal-soft font-semibold">themasalacompany</span>
-          </p>
-          <Link to="/login" className="text-xs text-spice-brown hover:underline tracking-wide font-semibold">
+        <div className="mt-8 border-t border-cream-dark pt-6 text-center relative z-10">
+          <Link 
+            to="/login" 
+            className="text-[10px] text-spice-brown/60 hover:text-spice-brown tracking-[0.2em] uppercase font-bold transition-colors inline-flex items-center gap-1.5"
+          >
             ← Back to Customer Login
           </Link>
         </div>
