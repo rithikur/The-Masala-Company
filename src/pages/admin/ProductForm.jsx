@@ -110,7 +110,7 @@ const ProductForm = () => {
       toast.success("Image uploaded successfully.", { id: toastId })
     } catch (err) {
       // Simulate placeholder/mock image upload if backend is unconfigured
-      const simulatedUrl = `/images/product_garam_masala.png`
+      const simulatedUrl = `/images/product_garam_masala.jpg`
       const newImg = {
         url: simulatedUrl,
         alt_text: 'Simulated Upload',

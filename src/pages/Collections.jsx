@@ -41,14 +41,14 @@ const Collections = () => {
           
           <div className="text-center mb-16">
             <span className="text-xs uppercase tracking-[0.2em] text-turmeric font-semibold block mb-3">Our Offerings</span>
-            <h1 className="text-5xl md:text-6xl font-display font-light text-spice-brown mb-6">Curated Collections</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-display font-light text-spice-brown mb-6">Curated Collections</h1>
             <p className="max-w-2xl mx-auto text-charcoal-soft font-body leading-relaxed text-sm">
               Discover our carefully sourced selections. From foundational whole spices to intricate signature blends, everything is designed to elevate your cooking.
             </p>
           </div>
 
           {/* BENTO GRID UI */}
-          <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[250px] gap-4 mb-32">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[220px] gap-4 mb-20">
             {categories.map((collection, idx) => (
               <motion.div 
                 key={collection.id}
@@ -56,11 +56,14 @@ const Collections = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className={`group relative overflow-hidden bg-cream-dark flex flex-col ${collection.span}`}
+                className={`group relative overflow-hidden bg-cream-dark flex flex-col ${
+                  // On mobile ignore spans — everything is 1 col
+                  window.innerWidth >= 768 ? collection.span : ''
+                }`}
               >
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src={collection.image_url || '/images/hero_spices_bg.png'} 
+                    src={collection.image_url || '/images/hero_spices_bg.jpg'} 
                     alt={collection.name}
                     className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-transform duration-1000 group-hover:scale-105"
                   />
@@ -98,7 +101,7 @@ const Collections = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredProducts.map((product, idx) => {
                 const primaryImage = product.images?.find(i => i.is_primary) || product.images?.[0]
-                const imageUrl = primaryImage?.url || '/images/product_garam_masala.png'
+                const imageUrl = primaryImage?.url || '/images/product_garam_masala.jpg'
                 const startingPrice = product.variants?.length > 0 ? Math.min(...product.variants.map(v => parseFloat(v.price))) : 0
 
                 return (
@@ -123,7 +126,7 @@ const Collections = () => {
                         e.preventDefault()
                         toggleWishlist(product)
                       }}
-                      className="absolute top-3 right-3 p-2 rounded-full bg-cream/80 backdrop-blur-sm shadow-sm hover:bg-cream transition-colors text-earth z-10 opacity-0 group-hover:opacity-100 duration-300"
+                      className="absolute top-3 right-3 p-2 rounded-full bg-cream/80 backdrop-blur-sm shadow-sm hover:bg-cream transition-colors z-10 sm:opacity-0 sm:group-hover:opacity-100 duration-300"
                       title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                     >
                       {isWishlisted(product.id) ? (

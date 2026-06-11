@@ -355,7 +355,7 @@ const Checkout = () => {
                   <div key={item.variant.id} className="flex gap-4 items-center">
                     <div className="w-12 h-16 bg-cream border border-earth/5 overflow-hidden shrink-0">
                       <img
-                        src={item.product.images?.[0]?.url || '/images/product_garam_masala.png'}
+                        src={item.product.images?.[0]?.url || '/images/product_garam_masala.jpg'}
                         alt={item.product.name}
                         className="w-full h-full object-cover"
                       />

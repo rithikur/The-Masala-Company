@@ -88,7 +88,7 @@ const ProductList = () => {
 
   // Determine Hero Content
   const activeCatObj = categories.find(c => c.slug === currentCategory) || categories[0]
-  const heroImage = activeCatObj?.image_url || '/images/hero_spices_bg.png'
+  const heroImage = activeCatObj?.image_url || '/images/hero_spices_bg.jpg'
   const heroTitle = activeCatObj ? activeCatObj.name : 'The Complete Collection'
   const heroDesc = activeCatObj?.description || 'Discover our curated selection of premium spices and blends.'
 
@@ -141,7 +141,7 @@ const ProductList = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="font-display text-5xl md:text-6xl text-cream mb-6 leading-tight"
+              className="font-display text-3xl sm:text-4xl md:text-6xl text-cream mb-6 leading-tight"
             >
               {heroTitle}
             </motion.h1>
@@ -296,7 +296,7 @@ const ProductList = () => {
             >
               {products.map((product, idx) => {
                 const primaryImage = product.images?.find(i => i.is_primary) || product.images?.[0]
-                const imageUrl = primaryImage?.url || '/images/product_garam_masala.png'
+                const imageUrl = primaryImage?.url || '/images/product_garam_masala.jpg'
                 
                 // Get starting price
                 const startingPrice = product.variants?.length > 0 
@@ -328,7 +328,7 @@ const ProductList = () => {
                           loading="lazy"
                           onError={(e) => {
                             e.target.onerror = null
-                            e.target.src = '/images/product_garam_masala.png'
+                            e.target.src = '/images/product_garam_masala.jpg'
                           }}
                         />
                         
@@ -341,7 +341,7 @@ const ProductList = () => {
                             e.preventDefault()
                             toggleWishlist(product)
                           }}
-                          className="absolute top-4 right-4 p-3 rounded-full bg-cream/90 backdrop-blur-md shadow-lg text-spice-brown transform scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 hover:bg-cream hover:text-turmeric z-10"
+                          className="absolute top-4 right-4 p-3 rounded-full bg-cream/90 backdrop-blur-md shadow-lg text-spice-brown transform scale-90 sm:opacity-0 sm:group-hover:opacity-100 sm:group-hover:scale-100 transition-all duration-300 hover:bg-cream hover:text-turmeric z-10"
                           title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
                         >
                           {isWishlisted(product.id) ? (

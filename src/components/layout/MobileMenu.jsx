@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiX } from 'react-icons/hi'
+import { HiX, HiOutlineSearch } from 'react-icons/hi'
 import {
   RiInstagramLine,
   RiFacebookLine,
@@ -9,7 +9,7 @@ import {
   RiYoutubeLine,
 } from 'react-icons/ri'
 
-const MobileMenu = ({ isOpen, onClose, links = [] }) => {
+const MobileMenu = ({ isOpen, onClose, links = [], onSearch }) => {
   // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
@@ -65,8 +65,19 @@ const MobileMenu = ({ isOpen, onClose, links = [] }) => {
               </button>
             </div>
 
+            {/* Search bar inside menu */}
+            <div className="px-6 pb-2">
+              <button
+                onClick={() => { onClose(); onSearch?.() }}
+                className="w-full flex items-center gap-3 px-4 py-3 bg-cream-dark/60 rounded-md text-charcoal-muted font-body text-sm hover:bg-cream-dark transition-colors"
+              >
+                <HiOutlineSearch size={16} />
+                <span>Search spices...</span>
+              </button>
+            </div>
+
             {/* Nav Links */}
-            <nav className="flex-1 px-6 py-8 flex flex-col gap-1" aria-label="Mobile navigation links">
+            <nav className="flex-1 px-6 py-4 flex flex-col gap-1" aria-label="Mobile navigation links">
               {links.map(({ label, to }, i) => (
                 <motion.div
                   key={to}
@@ -95,6 +106,23 @@ const MobileMenu = ({ isOpen, onClose, links = [] }) => {
 
             {/* Footer area */}
             <div className="px-6 py-6 border-t border-cream-dark space-y-4">
+              {/* Auth links */}
+              <div className="flex gap-3">
+                <Link
+                  to="/login"
+                  onClick={onClose}
+                  className="flex-1 text-center py-2.5 bg-spice-brown text-cream font-body text-xs uppercase tracking-widest hover:bg-turmeric transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/profile?tab=wishlist"
+                  onClick={onClose}
+                  className="flex-1 text-center py-2.5 border border-spice-brown/30 text-spice-brown font-body text-xs uppercase tracking-widest hover:border-spice-brown transition-colors"
+                >
+                  Wishlist
+                </Link>
+              </div>
               <p className="font-accent text-sm text-charcoal-muted italic">
                 From Farm to Flavor
               </p>

@@ -9,12 +9,14 @@ import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 
 import AppRouter from './routes/AppRouter'
+import ScrollToTop from './components/common/ScrollToTop'
 import './styles/globals.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>

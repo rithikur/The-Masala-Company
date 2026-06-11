@@ -22,8 +22,8 @@ const MOCK_PRODUCTS = [
       { id: 'v1-2', weight: '250g', price: 790.00, inventory_count: 12, sku: 'TMC-RGM-250' }
     ],
     images: [
-      { url: '/images/product_garam_masala.png', alt_text: 'Royal Garam Masala Packaging', is_primary: true },
-      { url: '/images/product_turmeric.png', alt_text: 'Royal Garam Masala Whole Spices', is_primary: false }
+      { url: '/images/product_garam_masala.jpg', alt_text: 'Royal Garam Masala Packaging', is_primary: true },
+      { url: '/images/product_turmeric.jpg', alt_text: 'Royal Garam Masala Whole Spices', is_primary: false }
     ],
     category_slug: 'signature-blends',
     tasting_notes: 'Cinnamon warmth, black pepper sharpness, cardamom sweetness, and a complex floral depth of whole mace and nutmeg.',
@@ -41,8 +41,8 @@ const MOCK_PRODUCTS = [
       { id: 'v2-2', weight: '250g', price: 620.00, inventory_count: 18, sku: 'TMC-ERT-250' }
     ],
     images: [
-      { url: '/images/product_turmeric.png', alt_text: 'Erode Turmeric Jar', is_primary: true },
-      { url: '/images/product_garam_masala.png', alt_text: 'Erode Turmeric Powder Close Up', is_primary: false }
+      { url: '/images/product_turmeric.jpg', alt_text: 'Erode Turmeric Jar', is_primary: true },
+      { url: '/images/product_garam_masala.jpg', alt_text: 'Erode Turmeric Powder Close Up', is_primary: false }
     ],
     category_slug: 'single-origin',
     tasting_notes: 'Rich woody aroma, intense gingery earthiness, with a subtle bitter-sweet undertone and warm finish.',
@@ -60,8 +60,8 @@ const MOCK_PRODUCTS = [
       { id: 'v3-2', weight: '250g', price: 720.00, inventory_count: 15, sku: 'TMC-KLM-250' }
     ],
     images: [
-      { url: '/images/product_garam_masala.png', alt_text: 'Kashmiri Lal Mirch Packaging', is_primary: true },
-      { url: '/images/product_turmeric.png', alt_text: 'Kashmiri Lal Mirch Whole Chillies', is_primary: false }
+      { url: '/images/product_garam_masala.jpg', alt_text: 'Kashmiri Lal Mirch Packaging', is_primary: true },
+      { url: '/images/product_turmeric.jpg', alt_text: 'Kashmiri Lal Mirch Whole Chillies', is_primary: false }
     ],
     category_slug: 'single-origin',
     tasting_notes: 'Mildly pungent, fruity, sweet, smoky, offering a gorgeous natural red color with minimal heat.',
@@ -79,8 +79,8 @@ const MOCK_PRODUCTS = [
       { id: 'v4-2', weight: '250g', price: 920.00, inventory_count: 8, sku: 'TMC-TBP-250' }
     ],
     images: [
-      { url: '/images/product_turmeric.png', alt_text: 'Tellicherry Black Peppercorns Jar', is_primary: true },
-      { url: '/images/product_garam_masala.png', alt_text: 'Tellicherry Pepper Close Up', is_primary: false }
+      { url: '/images/product_turmeric.jpg', alt_text: 'Tellicherry Black Peppercorns Jar', is_primary: true },
+      { url: '/images/product_garam_masala.jpg', alt_text: 'Tellicherry Pepper Close Up', is_primary: false }
     ],
     category_slug: 'single-origin',
     tasting_notes: 'Pungent heat, deep pine, woody undertones, citrus top notes, long and lingering finish.',
@@ -132,7 +132,7 @@ const ProductDetail = () => {
             setSelectedVariant(prod.variants[0])
           }
           const primaryImg = prod.images?.find(i => i.is_primary) || prod.images?.[0]
-          setSelectedImage(primaryImg?.url || '/images/product_garam_masala.png')
+          setSelectedImage(primaryImg?.url || '/images/product_garam_masala.jpg')
         }
       } catch (error) {
         toast.error('Failed to load product details.')
@@ -166,11 +166,11 @@ const ProductDetail = () => {
     addToCart(product, selectedVariant, 1)
 
     setTimeout(() => {
-      setBtnText('Added to Bag')
-      toast.success(`${product.name} (${selectedVariant.weight}) added to your collection.`)
-      
-      // Navigate to the new full-page cart
-      navigate('/cart')
+      setBtnText('Added to Bag ✓')
+      toast.success(`${product.name} (${selectedVariant.weight}) added to your bag!`, {
+        icon: '🛍️',
+        duration: 3000,
+      })
 
       setTimeout(() => {
         setIsAdding(false)
@@ -264,7 +264,7 @@ const ProductDetail = () => {
                 style={{ transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%` }}
                 onError={(e) => {
                   e.target.onerror = null
-                  e.target.src = '/images/product_garam_masala.png'
+                  e.target.src = '/images/product_garam_masala.jpg'
                 }}
               />
             </div>
@@ -285,7 +285,7 @@ const ProductDetail = () => {
                       className="w-full h-full object-cover" 
                       onError={(e) => {
                         e.target.onerror = null
-                        e.target.src = '/images/product_garam_masala.png'
+                        e.target.src = '/images/product_garam_masala.jpg'
                       }}
                     />
                   </button>
@@ -439,7 +439,7 @@ const ProductDetail = () => {
           >
             {relatedProducts.map((p) => {
               const primaryImage = p.images?.find(i => i.is_primary) || p.images?.[0]
-              const imageUrl = primaryImage?.url || '/images/product_garam_masala.png'
+              const imageUrl = primaryImage?.url || '/images/product_garam_masala.jpg'
               const startingPrice = p.variants?.length > 0 
                 ? Math.min(...p.variants.map(v => parseFloat(v.price))) 
                 : 0
@@ -457,7 +457,7 @@ const ProductDetail = () => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => {
                         e.target.onerror = null
-                        e.target.src = '/images/product_garam_masala.png'
+                        e.target.src = '/images/product_garam_masala.jpg'
                       }}
                     />
                   </div>

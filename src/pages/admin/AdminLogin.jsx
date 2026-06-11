@@ -43,7 +43,7 @@ const AdminLogin = () => {
       <div 
         className="absolute inset-0 opacity-[0.04] mix-blend-multiply pointer-events-none transform scale-105"
         style={{ 
-          backgroundImage: "url('/images/hero_spices_bg.png')",
+          backgroundImage: "url('/images/hero_spices_bg.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center"
         }}

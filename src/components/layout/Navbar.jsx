@@ -70,20 +70,21 @@ const Navbar = ({ transparent = false, darkText = false }) => {
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between"
           aria-label="Main navigation"
         >
-          {/* Logo */}
           <Link
             to="/"
             className="flex items-center gap-2 group"
             aria-label="The Masala Company — Home"
           >
+            {/* Short logo on mobile, full on desktop */}
             <span
               className={[
-                'font-display font-semibold text-lg tracking-widest uppercase',
+                'font-display font-semibold tracking-widest uppercase transition-colors duration-300',
+                'text-sm sm:text-base lg:text-lg',
                 textClass,
-                'transition-colors duration-300',
               ].join(' ')}
             >
-              The Masala Company
+              <span className="sm:hidden">TMC</span>
+              <span className="hidden sm:inline">The Masala Company</span>
             </span>
           </Link>
 
@@ -119,25 +120,25 @@ const Navbar = ({ transparent = false, darkText = false }) => {
           </ul>
 
           {/* Right Icons */}
-          <div className="flex items-center gap-1">
-            {/* Search */}
+          <div className="flex items-center gap-0 sm:gap-1">
+            {/* Search - hidden on mobile, visible from sm+ */}
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="Search"
               className={[
-                'p-2 rounded-xs transition-colors duration-200',
+                'p-2 rounded-xs transition-colors duration-200 hidden sm:inline-flex',
                 iconClass,
               ].join(' ')}
             >
               <HiOutlineSearch size={20} />
             </button>
 
-            {/* Wishlist */}
+            {/* Wishlist - hidden on xs to reduce navbar crowding */}
             <Link
               to="/profile?tab=wishlist"
               aria-label={`Wishlist${wishCount > 0 ? `, ${wishCount} items` : ''}`}
               className={[
-                'relative p-2 rounded-xs transition-colors duration-200',
+                'relative p-2 rounded-xs transition-colors duration-200 hidden sm:inline-flex',
                 iconClass,
               ].join(' ')}
             >

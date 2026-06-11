@@ -60,12 +60,12 @@ const CartDrawer = ({ isOpen, onClose }) => {
                   >
                     <div className="w-20 h-24 bg-cream-dark border border-earth/5 overflow-hidden shrink-0">
                       <img
-                        src={item.product.images?.[0]?.url || '/images/product_garam_masala.png'}
+                        src={item.product.images?.[0]?.url || '/images/product_garam_masala.jpg'}
                         alt={item.product.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.target.onerror = null
-                          e.target.src = '/images/product_garam_masala.png'
+                          e.target.src = '/images/product_garam_masala.jpg'
                         }}
                       />
                     </div>

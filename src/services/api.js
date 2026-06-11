@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:5000',
+  // No baseURL — uses Vite proxy: /api → http://127.0.0.1:5000
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
 })
@@ -31,7 +31,7 @@ api.interceptors.response.use(
         // Attempt to refresh
         const token = localStorage.getItem('masala_refresh_token')
         // Call refresh endpoint directly using fetch to avoid circular interceptor dependency
-        const refreshResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/refresh`, {
+        const refreshResponse = await fetch(`/api/auth/refresh`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

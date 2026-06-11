@@ -391,7 +391,7 @@ const Profile = () => {
                         <div key={item.id} className="flex gap-4 border border-earth/10 p-4 bg-cream rounded-none relative group">
                           <div className="w-16 h-20 bg-cream-dark overflow-hidden shrink-0 border border-earth/5">
                             <img
-                              src={p.images?.[0]?.url || '/images/product_garam_masala.png'}
+                              src={p.images?.[0]?.url || '/images/product_garam_masala.jpg'}
                               alt={p.name}
                               className="w-full h-full object-cover"
                             />

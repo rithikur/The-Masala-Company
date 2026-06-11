@@ -38,12 +38,12 @@ const Cart = () => {
                 <div key={item.variant.id} className="flex gap-6 pb-8 border-b border-earth/10">
                   <div className="w-32 h-40 bg-cream-dark border border-earth/5 overflow-hidden shrink-0">
                     <img
-                      src={item.product.images?.[0]?.url || '/images/product_garam_masala.png'}
+                      src={item.product.images?.[0]?.url || '/images/product_garam_masala.jpg'}
                       alt={item.product.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.onerror = null
-                        e.target.src = '/images/product_garam_masala.png'
+                        e.target.src = '/images/product_garam_masala.jpg'
                       }}
                     />
                   </div>
