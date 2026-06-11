@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import Lenis from 'lenis'
@@ -9,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const PageWrapper = ({ children, hideFooter = false, transparentNav = false, darkNavText = false, isPageLoading = false }) => {
   const lenisRef = useRef(null)
+  const { pathname } = useLocation()
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -50,6 +52,16 @@ const PageWrapper = ({ children, hideFooter = false, transparentNav = false, dar
       }, 100)
     }
   }, [isPageLoading])
+
+  // Scroll to top smoothly on route change
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { 
+        duration: 1.5, 
+        ease: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+      })
+    }
+  }, [pathname])
 
   return (
     <div className="min-h-screen flex flex-col bg-cream">

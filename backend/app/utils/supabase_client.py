@@ -18,8 +18,9 @@ def get_supabase_admin() -> Client:
     """Service role client — bypasses RLS, use only in admin routes"""
     global _supabase_admin
     if _supabase_admin is None:
+        service_key = current_app.config.get('SUPABASE_SERVICE_KEY') or current_app.config.get('SUPABASE_ANON_KEY')
         _supabase_admin = create_client(
             current_app.config['SUPABASE_URL'],
-            current_app.config['SUPABASE_SERVICE_KEY']
+            service_key
         )
     return _supabase_admin

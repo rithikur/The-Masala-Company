@@ -9,29 +9,32 @@ export default {
       colors: {
         // Luxury Spice Color Palette
         spice: {
-          brown:  '#3D2B1F', // Primary: Deep Spice Brown
-          dark:   '#1A0F0A',
-          medium: '#4A2C1A',
+          brown:  '#2C1810', // Primary: Deep Brown
+          dark:   '#1A0C08',
+          medium: '#4A2B1D',
         },
         turmeric: {
-          DEFAULT: '#F4C430', // Accent 1: Turmeric Gold
-          light:   '#F4C430',
-          pale:    '#FDFBF7',
+          DEFAULT: '#D69A2D', // Saffron Gold
+          light:   '#E5B250',
+          pale:    '#F7F2EA',
         },
         saffron: {
-          DEFAULT: '#F4A900', // Accent 2: Saffron Gold
-          dark:    '#F4A900',
+          DEFAULT: '#D69A2D', // Saffron Gold
+          dark:    '#B87F1E',
         },
         cream: {
-          DEFAULT: '#FDFBF7', // Background: Warm Cream
-          dark:    '#F5EDD8',
-          warm:    '#FDFBF7',
+          DEFAULT: '#F7F2EA', // Background: Ivory
+          dark:    '#DCCDB7', // Sand Beige
+          warm:    '#F7F2EA',
         },
         charcoal: {
-          DEFAULT: '#1A1A1A', // Text: Charcoal Black
-          soft:    '#1A1A1A',
-          muted:   '#6C6C70',
+          DEFAULT: '#2C1810', // Text: Deep Brown
+          soft:    '#3D2A21',
+          muted:   '#7A675C',
         },
+        botanical: {
+          DEFAULT: '#73805A', // Cardamom Green
+        }
       },
 
       fontFamily: {

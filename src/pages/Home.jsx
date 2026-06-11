@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { HiArrowRight } from 'react-icons/hi'
+import { HiArrowRight, HiHeart, HiOutlineHeart } from 'react-icons/hi'
 import PageWrapper from '../components/layout/PageWrapper'
+import useWishlist from '../hooks/useWishlist'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -35,28 +36,31 @@ const LoadingScreen = () => {
   )
 }
 
+const SHOWCASE_SPICES = [
+  { id: 1, name: "Green Cardamom", origin: "Kerala Highlands", farmer: "Traditional Family Estate", harvest: "2025 Season", image: "/images/floating_cardamom.png", chapter: "Chapter I", chapterTitle: "The Soil of Kerala", chapterDesc: "Nurtured in the mist-kissed Western Ghats. Harvested before dawn to capture its intense, aromatic sweet-eucalyptus profile." },
+  { id: 2, name: "Ceylon Cinnamon", origin: "Sri Lanka", farmer: "Organic Cooperatives", harvest: "Winter 2024", image: "/images/floating_cinnamon.png", chapter: "Chapter II", chapterTitle: "The Ceylon Sun", chapterDesc: "True cinnamon cured patiently under the tropical sun to lock in its complex, wood-floral sweetness." },
+  { id: 3, name: "Garam Masala", origin: "Punjab Valleys", farmer: "Master Blenders", harvest: "Small Batch 2025", image: "/images/product_garam_masala.png", chapter: "Chapter III", chapterTitle: "The Royal Blend", chapterDesc: "A masterfully crafted blend of roasted spices, carrying the warmth and heritage of northern culinary traditions." },
+  { id: 4, name: "Turmeric Root", origin: "Erode, Tamil Nadu", farmer: "Heritage Farmers", harvest: "Spring 2025", image: "/images/product_turmeric.png", chapter: "Chapter IV", chapterTitle: "The Golden Root", chapterDesc: "Vibrant, earthy, and rich in curcumin. Grown in the nutrient-dense soils of the south for maximum potency." },
+]
+
 const FEATURED_PRODUCTS = [
-  { id: 1, name: "Kashmir Saffron", origin: "Pampore, Kashmir", price: "₹850", image: "/images/hero_spices_bg.png" },
-  { id: 2, name: "Ceylon Cinnamon", origin: "Sri Lanka", price: "₹420", image: "/images/floating_cinnamon.png" },
-  { id: 3, name: "Green Cardamom", origin: "Kerala, India", price: "₹650", image: "/images/floating_cardamom.png" },
-  { id: 4, name: "Turmeric Powder", origin: "Erode, Tamil Nadu", price: "₹210", image: "/images/hero_spices_bg.png" }
+  { id: 1, name: "Kashmir Saffron", origin: "Pampore, Kashmir", price: "₹850", image: "/images/hero_spices_bg.png", slug: "kashmir-saffron" },
+  { id: 2, name: "Ceylon Cinnamon", origin: "Sri Lanka", price: "₹420", image: "/images/floating_cinnamon.png", slug: "ceylon-cinnamon" },
+  { id: 3, name: "Green Cardamom", origin: "Kerala, India", price: "₹650", image: "/images/floating_cardamom.png", slug: "green-cardamom" },
+  { id: 4, name: "Turmeric Powder", origin: "Erode, Tamil Nadu", price: "₹210", image: "/images/hero_spices_bg.png", slug: "turmeric-powder" }
 ]
 
 const Home = () => {
   const [loading, setLoading] = useState(true)
+  const { toggleWishlist, isWishlisted } = useWishlist()
   const container = useRef(null)
   
-  // Hero section refs
-  const heroPinRef = useRef(null)
-  const heroImageRef = useRef(null)
-  const cardamomRef = useRef(null)
-  const cinnamonRef = useRef(null)
-  const centerCardRef = useRef(null)
-  const coverTextRef = useRef(null)
-  const chapter1Ref = useRef(null)
-  const chapter2Ref = useRef(null)
-  const finalTextRef = useRef(null)
-  const scrollIndicatorRef = useRef(null)
+  // Luxury Hero Refs
+  const heroRef = useRef(null)
+  const bgImageRef = useRef(null)
+  const [activeSpice, setActiveSpice] = useState(0)
+
+  // Floating particles removed for performance
 
   // Horizontal scroll refs
   const horizontalWrapperRef = useRef(null)
@@ -70,177 +74,90 @@ const Home = () => {
     return () => clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    // Only auto-rotate on mobile screens (less than 1024px)
+    const mediaQuery = window.matchMedia('(max-width: 1023px)');
+    let timer;
+    
+    const handleMediaChange = (e) => {
+      if (e.matches) {
+        timer = setInterval(() => {
+          setActiveSpice((prev) => (prev + 1) % SHOWCASE_SPICES.length);
+        }, 4000);
+      } else {
+        clearInterval(timer);
+      }
+    };
+    
+    handleMediaChange(mediaQuery);
+    mediaQuery.addEventListener('change', handleMediaChange);
+    
+    return () => {
+      clearInterval(timer);
+      mediaQuery.removeEventListener('change', handleMediaChange);
+    };
+  }, []);
+
   useGSAP(() => {
     if (loading) return
 
-    // 0. Initial center positioning of all layers
-    gsap.set(cardamomRef.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-    gsap.set(cinnamonRef.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-    gsap.set(centerCardRef.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-    gsap.set(coverTextRef.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-    gsap.set(chapter1Ref.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-    gsap.set(chapter2Ref.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-    gsap.set(finalTextRef.current, { xPercent: -50, yPercent: -50, left: "50%", top: "50%" })
-
-    // Passive floating animations (bobbing physics)
-    const floatCardamom = gsap.to('.hero-cardamom-img', {
-      y: "-=12",
-      rotation: "+=3",
-      duration: 3.5,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1
-    })
-    const floatCinnamon = gsap.to('.hero-cinnamon-img', {
-      y: "+=15",
-      rotation: "-=2",
-      duration: 4,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1
-    })
-
     const mm = gsap.matchMedia()
+    const totalSpices = SHOWCASE_SPICES.length
 
-    // 1. Hero Pinned Story Sequence
-    // DESKTOP TRIGGER (>= 768px)
-    mm.add("(min-width: 768px)", () => {
-      // Set initial desktop layout values (Load state)
-      // Cover text on the left, botanical card on the right
-      gsap.set(coverTextRef.current, { x: "-22vw", y: "0px", opacity: 1 })
-      gsap.set(centerCardRef.current, { x: "18vw", y: "0px", opacity: 1, scale: 1 })
-      gsap.set(cardamomRef.current, { x: "18vw", y: "0px", scale: 1, opacity: 1, rotation: 0 })
-      gsap.set(cinnamonRef.current, { x: "-60vw", y: "10vh", scale: 1, opacity: 0, rotation: -65 })
-      gsap.set(heroImageRef.current, { opacity: 0.22, scale: 1.1 })
-      
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: heroPinRef.current,
-          start: "top top",
-          end: "+=300%", // Pin for 3 screen heights
-          pin: true,
-          scrub: 1,
+    mm.add("(min-width: 1024px)", () => {
+      // 1. Pinned Scroll Sequence for Desktop Hero
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: "top top",
+        end: `+=${totalSpices * 100}%`, // Scroll length equals 100vh per spice
+        pin: true,
+        scrub: 1,
+        onUpdate: (self) => {
+          let index = Math.floor(self.progress * totalSpices)
+          if (index >= totalSpices) index = totalSpices - 1
+          setActiveSpice((prev) => (prev !== index ? index : prev))
         }
       })
 
-      // Frame 1 -> Chapter 1 (Terroir)
-      // Fade out cover text & botanical card frame
-      tl.to(coverTextRef.current, { opacity: 0, y: "-10vh", duration: 1 }, 0)
-      tl.to(centerCardRef.current, { opacity: 0, scale: 0.9, duration: 1 }, 0)
-      tl.to(scrollIndicatorRef.current, { opacity: 0, duration: 0.5 }, 0)
+      // Subtitle timeline for background color shifts
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: `+=${totalSpices * 100}%`,
+          scrub: 1,
+        }
+      })
       
-      // Cardamom slides slightly more right, rotates and scales up
-      tl.to(cardamomRef.current, { x: "24vw", y: "-3vh", scale: 1.25, rotation: 35, duration: 1.5 }, 0)
-      
-      // Background shifts to Cream Dark (soil) & texture fades slightly for text readability
-      tl.to(heroPinRef.current, { backgroundColor: "#EDE7D9", duration: 1.5 }, 0)
-      tl.to(heroImageRef.current, { opacity: 0.15, duration: 1.5 }, 0)
-      
-      // Chapter 1 text fades in on the left side
-      tl.fromTo(chapter1Ref.current, { x: "-22vw", y: "30px", opacity: 0 }, { x: "-22vw", y: "0px", opacity: 1, duration: 1.2 }, 0.3)
+      tl.to(heroRef.current, { backgroundColor: "#EDE7D9", duration: 1 })
+        .to(heroRef.current, { backgroundColor: "#F5EDD8", duration: 1 })
+        .to(heroRef.current, { backgroundColor: "#FAF6EE", duration: 1 })
 
-      // Chapter 1 -> Chapter 2 (The Harvest)
-      // Cardamom fades and glides off-screen right
-      tl.to(cardamomRef.current, { x: "60vw", opacity: 0, rotation: 65, duration: 1.5 }, 1.5)
-      
-      // Chapter 1 text fades out
-      tl.to(chapter1Ref.current, { opacity: 0, y: "-30px", duration: 1 }, 1.5)
-      
-      // Background shifts to Cream Warm (sun)
-      tl.to(heroPinRef.current, { backgroundColor: "#F5EDD8", duration: 1.5 }, 1.5)
-      
-      // Cinnamon slides in from left and Chapter 2 text fades in on the right
-      tl.to(cinnamonRef.current, { x: "-22vw", y: "3vh", opacity: 1, rotation: -25, duration: 1.8 }, 1.5)
-      tl.fromTo(chapter2Ref.current, { x: "22vw", y: "30px", opacity: 0 }, { x: "22vw", y: "0px", opacity: 1, duration: 1.5 }, 1.8)
-
-      // Chapter 2 -> Final Reveal
-      // Cinnamon moves to its final left-center position (framing the title, no overlap)
-      tl.to(cinnamonRef.current, { x: "-28vw", y: "10vh", scale: 0.95, rotation: -40, duration: 1.5 }, 3.0)
-      
-      // Cardamom slides back in from right to its final right-center position (framing the title, no overlap)
-      tl.to(cardamomRef.current, { x: "28vw", y: "-12vh", scale: 0.95, rotation: 15, opacity: 1, duration: 1.5 }, 3.0)
-      
-      // Chapter 2 text fades out
-      tl.to(chapter2Ref.current, { opacity: 0, y: "-30px", duration: 1 }, 3.0)
-      
-      // Background spices image fades in slightly more for visual texture
-      tl.to(heroImageRef.current, { opacity: 0.25, scale: 1.2, duration: 2 }, 3.0)
-      
-      // Final centered text fades in
-      tl.fromTo(finalTextRef.current, { x: 0, y: "40px", opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 1.8 }, 3.3)
-      
-      // Background shifts back to Cream
-      tl.to(heroPinRef.current, { backgroundColor: "#FAF6EE", duration: 1.5 }, 3.0)
+      // Parallax background scroll for desktop
+      gsap.to(bgImageRef.current, {
+        y: "15%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "top top",
+          end: `+=${totalSpices * 100}%`,
+          scrub: true
+        }
+      })
     })
 
-    // MOBILE TRIGGER (< 768px)
-    mm.add("(max-width: 767px)", () => {
-      // Set initial mobile layout values (Load state)
-      // Cover text top, botanical card bottom (spaced to prevent overlapping elements or navbar)
-      gsap.set(coverTextRef.current, { x: 0, y: "-20vh", opacity: 1 })
-      gsap.set(centerCardRef.current, { x: 0, y: "12vh", opacity: 1, scale: 1 })
-      gsap.set(cardamomRef.current, { x: 0, y: "12vh", scale: 1, opacity: 1, rotation: 0 })
-      gsap.set(cinnamonRef.current, { x: 0, y: "65vh", scale: 1, opacity: 0, rotation: -65 })
-      gsap.set(heroImageRef.current, { opacity: 0.18, scale: 1.1 })
-      
-      const tl = gsap.timeline({
+    mm.add("(max-width: 1023px)", () => {
+      // Normal parallax on mobile without pinning
+      gsap.to(bgImageRef.current, {
+        y: "10%",
+        ease: "none",
         scrollTrigger: {
-          trigger: heroPinRef.current,
+          trigger: heroRef.current,
           start: "top top",
-          end: "+=300%",
-          pin: true,
-          scrub: 1,
+          end: "bottom top",
+          scrub: true
         }
       })
-
-      // Frame 1 -> Chapter 1 (Terroir)
-      tl.to(coverTextRef.current, { opacity: 0, y: "-32vh", duration: 1 }, 0)
-      tl.to(centerCardRef.current, { opacity: 0, scale: 0.95, duration: 1 }, 0)
-      tl.to(scrollIndicatorRef.current, { opacity: 0, duration: 0.5 }, 0)
-      
-      // Cardamom slides upward
-      tl.to(cardamomRef.current, { x: 0, y: "-20vh", scale: 0.85, rotation: 25, duration: 1.5 }, 0)
-      
-      // Background shifts to Cream Dark
-      tl.to(heroPinRef.current, { backgroundColor: "#EDE7D9", duration: 1.5 }, 0)
-      tl.to(heroImageRef.current, { opacity: 0.12, duration: 1.5 }, 0)
-      
-      // Chapter 1 text fades in below cardamom
-      tl.fromTo(chapter1Ref.current, { x: 0, y: "18vh", opacity: 0 }, { x: 0, y: "11vh", opacity: 1, duration: 1.2 }, 0.3)
-
-      // Chapter 1 -> Chapter 2 (The Harvest)
-      // Cardamom slides out top
-      tl.to(cardamomRef.current, { y: "-65vh", opacity: 0, duration: 1.5 }, 1.5)
-      
-      // Chapter 1 text fades out
-      tl.to(chapter1Ref.current, { opacity: 0, y: "0vh", duration: 1 }, 1.5)
-      
-      // Background shifts to Cream Warm
-      tl.to(heroPinRef.current, { backgroundColor: "#F5EDD8", duration: 1.5 }, 1.5)
-      
-      // Cinnamon slides in from bottom to top half
-      tl.to(cinnamonRef.current, { x: 0, y: "-20vh", scale: 0.85, opacity: 1, rotation: -20, duration: 1.8 }, 1.5)
-      // Chapter 2 text fades in below
-      tl.fromTo(chapter2Ref.current, { x: 0, y: "18vh", opacity: 0 }, { x: 0, y: "11vh", opacity: 1, duration: 1.5 }, 1.8)
-
-      // Chapter 2 -> Final Reveal
-      // Cinnamon moves left-top (framing the title on mobile)
-      tl.to(cinnamonRef.current, { x: "-25vw", y: "-24vh", scale: 0.7, rotation: -35, duration: 1.5 }, 3.0)
-      
-      // Cardamom slides back in from right to right-top (framing the title on mobile)
-      tl.to(cardamomRef.current, { x: "25vw", y: "-20vh", scale: 0.7, rotation: 15, opacity: 1, duration: 1.5 }, 3.0)
-      
-      // Chapter 2 text fades out
-      tl.to(chapter2Ref.current, { opacity: 0, y: "0vh", duration: 1 }, 3.0)
-      
-      // Background spices image fades in behind at low opacity
-      tl.to(heroImageRef.current, { opacity: 0.20, scale: 1.15, duration: 2 }, 3.0)
-      
-      // Final centered text fades in in the bottom half
-      tl.fromTo(finalTextRef.current, { x: 0, y: "18vh", opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 1.8 }, 3.3)
-      
-      // Background shifts to Cream
-      tl.to(heroPinRef.current, { backgroundColor: "#FAF6EE", duration: 1.5 }, 3.0)
     })
 
     // 2. Horizontal Scroll Section (Chapter ingredients - refactored to container animation)
@@ -262,11 +179,13 @@ const Home = () => {
     ScrollTrigger.refresh()
 
     return () => {
-      floatCardamom.kill()
-      floatCinnamon.kill()
       mm.revert()
     }
   }, { scope: container, dependencies: [loading] })
+
+  // Counter animation logic
+  const counterRef = useRef(null)
+  const isCounterInView = useInView(counterRef, { once: true, margin: "-100px" })
 
   return (
     <PageWrapper transparentNav darkNavText isPageLoading={loading}>
@@ -276,139 +195,290 @@ const Home = () => {
 
       <div ref={container} className="bg-cream overflow-hidden">
         
-        {/* === STORYTELLING HERO SECTION === */}
+        {/* === LUXURY HERO SECTION === */}
         <section 
-          ref={heroPinRef} 
-          className="hero-section relative h-screen w-full overflow-hidden bg-cream flex items-center justify-center transition-colors duration-500"
+          ref={heroRef} 
+          className="relative min-h-[100dvh] lg:h-[100dvh] w-full overflow-hidden bg-cream flex flex-col justify-center"
         >
-          {/* Background Textured Spice Image (Visible from start at low opacity) */}
-          <div 
-            ref={heroImageRef}
-            className="absolute inset-0 w-full h-full opacity-[0.22] mix-blend-multiply pointer-events-none transform scale-110"
-            style={{ 
-              backgroundImage: "url('/images/hero_spices_bg.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center"
-            }}
-          />
-
-          {/* Background Vignette or Overlay */}
-          <div className="absolute inset-0 bg-radial-gradient from-transparent to-cream/20 pointer-events-none" />
-
-          {/* Interactive Floating Spices */}
-          {/* Cardamom wrapper */}
-          <div 
-            ref={cardamomRef} 
-            className="hero-cardamom absolute z-10 pointer-events-none mix-blend-multiply flex items-center justify-center"
-          >
-            <img 
-              src="/images/floating_cardamom.png" 
-              alt="Kerala Cardamom Pod" 
-              className="hero-cardamom-img w-48 h-48 md:w-64 md:h-64 object-contain"
+          {/* Parallax Background */}
+          <div className="absolute inset-0 w-full h-[130%] -top-[15%] pointer-events-none">
+            <div 
+              ref={bgImageRef}
+              className="absolute inset-0 w-full h-full bg-cover bg-center opacity-30 mix-blend-multiply"
+              style={{ backgroundImage: "url('/images/hero_spices_bg.png')" }}
             />
+            {/* Soft Warm Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-cream/40 via-transparent to-cream" />
+            <div className="absolute inset-0 bg-radial-gradient from-transparent to-cream/70" />
+            {/* Grain overlay removed for performance */}
           </div>
 
-          {/* Cinnamon wrapper */}
-          <div 
-            ref={cinnamonRef} 
-            className="hero-cinnamon absolute z-10 pointer-events-none mix-blend-multiply flex items-center justify-center opacity-0"
-          >
-            <img 
-              src="/images/floating_cinnamon.png" 
-              alt="Ceylon Cinnamon Bark" 
-              className="hero-cinnamon-img w-48 h-48 md:w-64 md:h-64 object-contain"
-            />
-          </div>
 
-          {/* Center Card Frame (Botanical Specimen Aesthetic - Absolute positioned to center correctly) */}
-          <div 
-            ref={centerCardRef} 
-            className="hero-center-card absolute border border-spice-brown/15 bg-cream-warm/40 backdrop-blur-xs w-[280px] h-[380px] md:w-[320px] md:h-[440px] flex flex-col items-center justify-center p-6 z-5"
-          >
-            <div className="absolute top-4 left-4 text-[9px] md:text-[10px] tracking-[0.3em] font-body text-spice-brown/60 uppercase">Origin Select</div>
-            {/* cardamom placeholder area inside the card initially */}
-            <div className="w-40 h-40 md:w-56 md:h-56" /> 
-            <div className="absolute bottom-4 text-[9px] md:text-[10px] tracking-[0.2em] font-accent italic text-spice-brown/80">Elettaria cardamomum</div>
-          </div>
 
-          {/* TEXT CONTENT LAYERS */}
-          <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
+          {/* Main Content Grid (Top/Center) */}
+          <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12 pt-24 pb-8 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
             
-            {/* COVER TEXT (Asymmetric left aligned on desktop, centered on mobile) */}
-            <div 
-              ref={coverTextRef}
-              className="hero-cover-text absolute flex flex-col items-center md:items-start text-center md:text-left px-6 max-w-md"
-            >
-              <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-bold uppercase tracking-[0.2em] text-spice-brown leading-none mb-6 select-none">
-                The Masala Company
-              </h1>
-              <p className="font-accent italic text-lg sm:text-xl md:text-2xl text-charcoal-soft max-w-xs select-none">
-                Pure, unprocessed single-origin spices.
-              </p>
-            </div>
+            {/* ---------------- MOBILE HERO (< 1024px) ---------------- */}
+            <div className="w-full lg:hidden flex flex-col items-center text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+              >
+                <h1 className="font-display text-5xl sm:text-6xl font-bold text-spice-brown uppercase leading-[0.85] tracking-tight mb-4 flex flex-col">
+                  <span>The</span>
+                  <span>Masala</span>
+                  <span>Company</span>
+                </h1>
+                <p className="font-accent italic text-lg text-spice-brown/80 mb-6 px-4">
+                  India's finest single-origin spices.
+                </p>
+              </motion.div>
 
-            {/* CHAPTER 1 TEXT (Terroir) */}
-            <div 
-              ref={chapter1Ref}
-              className="hero-chapter-1-text absolute max-w-sm text-center md:text-left px-6 opacity-0 flex flex-col items-center md:items-start"
-            >
-              <p className="font-body text-[10px] md:text-xs tracking-[0.3em] uppercase text-turmeric mb-3 font-semibold">
-                Chapter I
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-spice-brown uppercase tracking-wider leading-tight mb-4 text-balance">
-                The Soil of Kerala
-              </h2>
-              <p className="font-body text-charcoal-soft text-sm md:text-base leading-relaxed">
-                Nurtured in the mist-kissed Western Ghats. Our green cardamom pods are harvested before dawn, capturing their intense, aromatic sweet-eucalyptus profile.
-              </p>
-            </div>
+              {/* Sleek Mobile Card */}
+              <motion.div 
+                className="w-full max-w-sm aspect-[4/5] relative rounded-2xl overflow-hidden shadow-luxury border border-spice-brown/10 mb-8 bg-cream-dark"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.2, delay: 0.2 }}
+              >
+                 <AnimatePresence mode="wait">
+                   <motion.img
+                      key={activeSpice}
+                      src={SHOWCASE_SPICES[activeSpice].image}
+                      alt={SHOWCASE_SPICES[activeSpice].name}
+                      initial={{ opacity: 0, scale: 1.1 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.1 }}
+                      transition={{ duration: 0.6 }}
+                      className="absolute inset-0 w-full h-full object-contain p-8 mix-blend-multiply"
+                   />
+                 </AnimatePresence>
+                 
+                 <div className="absolute inset-0 bg-gradient-to-t from-spice-brown via-spice-brown/40 to-transparent pointer-events-none" />
+                 
+                 <div className="absolute bottom-0 left-0 w-full p-6 text-left z-10">
+                    <p className="font-body text-[10px] tracking-[0.3em] uppercase text-turmeric mb-1">{SHOWCASE_SPICES[activeSpice].origin}</p>
+                    <h2 className="font-display text-3xl text-cream mb-2">{SHOWCASE_SPICES[activeSpice].name}</h2>
+                    <p className="font-body text-xs text-cream/80 line-clamp-2">{SHOWCASE_SPICES[activeSpice].chapterDesc}</p>
+                 </div>
+              </motion.div>
+              
+              {/* Mobile controls/dots */}
+              <div className="flex gap-2 mb-8">
+                {SHOWCASE_SPICES.map((_, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => setActiveSpice(idx)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${activeSpice === idx ? 'w-8 bg-spice-brown' : 'w-2 bg-spice-brown/20'}`}
+                  />
+                ))}
+              </div>
 
-            {/* CHAPTER 2 TEXT (The Craft) */}
-            <div 
-              ref={chapter2Ref}
-              className="hero-chapter-2-text absolute max-w-sm text-center md:text-right px-6 opacity-0 flex flex-col items-center md:items-end"
-            >
-              <p className="font-body text-[10px] md:text-xs tracking-[0.3em] uppercase text-turmeric mb-3 font-semibold">
-                Chapter II
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-spice-brown uppercase tracking-wider leading-tight mb-4 text-balance">
-                The Ceylon Sun
-              </h2>
-              <p className="font-body text-charcoal-soft text-sm md:text-base leading-relaxed">
-                True Ceylon Cinnamon from Sri Lanka, cured patiently under the tropical sun to lock in its complex, wood-floral sweetness.
-              </p>
-            </div>
-
-            {/* FINAL REVEAL TEXT */}
-            <div 
-              ref={finalTextRef}
-              className="hero-final-text absolute flex flex-col items-center text-center px-6 opacity-0"
-            >
-              <p className="font-body text-[10px] sm:text-xs tracking-[0.4em] uppercase text-turmeric mb-4 font-semibold">
-                The Master Collection
-              </p>
-              <h2 className="font-display text-4xl sm:text-6xl md:text-8xl font-bold text-spice-brown uppercase leading-none tracking-wide mb-8 text-balance">
-                From Farm <br/>
-                <span className="italic font-accent lowercase text-3xl sm:text-5xl md:text-7xl text-turmeric-light">to</span> Flavor.
-              </h2>
               <Link 
                 to="/collections" 
-                className="pointer-events-auto inline-flex items-center gap-4 px-8 py-3.5 border border-spice-brown text-spice-brown hover:bg-spice-brown hover:text-cream font-body text-xs uppercase tracking-widest transition-all duration-300"
+                className="w-full max-w-sm px-8 py-4 bg-spice-brown text-cream font-body text-xs uppercase tracking-widest hover:bg-turmeric transition-colors"
               >
-                Discover The Origin <HiArrowRight />
+                Explore Collection
               </Link>
             </div>
 
+            {/* ---------------- DESKTOP HERO (>= 1024px) ---------------- */}
+            {/* Left: Typography & CTAs */}
+            <div className="hidden lg:flex w-full lg:w-1/3 flex-col items-start text-left pt-0">
+              <AnimatePresence mode="wait">
+                {activeSpice === 0 ? (
+                  <motion.div
+                    key="intro"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -30 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  >
+                    <h1 className="font-display text-5xl lg:text-[4rem] font-medium text-spice-brown uppercase leading-[0.85] tracking-tight mb-4 flex flex-col">
+                      <span>The</span>
+                      <span>Masala</span>
+                      <span>Company</span>
+                    </h1>
+                    <p className="font-accent italic text-lg xl:text-xl text-spice-brown/80 mb-4">
+                      Tracing the journey of India's finest single-origin spices from farm to table.
+                    </p>
+                    <p className="font-body text-sm xl:text-base text-charcoal-muted max-w-sm mb-6 leading-relaxed">
+                      Hand-selected from trusted growers. Pure, traceable, and naturally processed.
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key={`chapter-${activeSpice}`}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -30 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  >
+                    <p className="font-body text-xs tracking-[0.4em] uppercase text-turmeric mb-3 font-semibold">
+                      {SHOWCASE_SPICES[activeSpice].chapter}
+                    </p>
+                    <h2 className="font-display text-5xl md:text-6xl lg:text-[4rem] font-bold text-spice-brown uppercase leading-[0.9] tracking-tight mb-4 text-balance">
+                      {SHOWCASE_SPICES[activeSpice].chapterTitle}
+                    </h2>
+                    <p className="font-body text-sm xl:text-base text-charcoal-muted max-w-sm mb-6 leading-relaxed">
+                      {SHOWCASE_SPICES[activeSpice].chapterDesc}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+                
+              <motion.div 
+                className="flex flex-row items-center justify-start gap-6 mt-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+              >
+                  <Link 
+                    to="/collections" 
+                    className="relative group overflow-hidden px-8 py-4 bg-spice-brown text-cream font-body text-xs uppercase tracking-widest transition-transform hover:scale-105 duration-300 shadow-luxury"
+                  >
+                    <span className="relative z-10 group-hover:text-spice-brown transition-colors duration-500">Explore Collection</span>
+                    <div className="absolute inset-0 bg-turmeric transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out" />
+                  </Link>
+                  <Link 
+                    to="/about" 
+                    className="group flex items-center gap-3 font-body text-xs uppercase tracking-widest text-spice-brown hover:text-turmeric transition-colors duration-300"
+                  >
+                    <span>Trace Origins</span>
+                    <HiArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+                  </Link>
+                </motion.div>
+            </div>
+
+            <div className="hidden lg:flex w-full lg:w-1/3 justify-center items-center relative my-4 lg:my-0">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
+                className="relative w-[280px] h-[380px] xl:w-[320px] xl:h-[440px] bg-cream-dark overflow-hidden rounded-t-full rounded-b-xl flex items-center justify-center group shadow-luxury border border-spice-brown/10"
+              >
+                <div className="absolute top-10 text-[10px] tracking-[0.3em] font-body text-spice-brown/60 uppercase z-20">Origin Select</div>
+                
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeSpice}
+                    src={SHOWCASE_SPICES[activeSpice].image}
+                    alt={SHOWCASE_SPICES[activeSpice].name}
+                    initial={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-contain p-12 mix-blend-multiply group-hover:scale-105 transition-transform duration-700"
+                  />
+                </AnimatePresence>
+
+                {/* Subtle bottom gradient to ground the image */}
+                <div className="absolute inset-0 bg-gradient-to-t from-cream-dark via-cream-dark/20 to-transparent pointer-events-none z-10 opacity-70" />
+              </motion.div>
+            </div>
+
+            {/* Right: Luxury Info Card */}
+            <div className="hidden lg:flex w-full lg:w-1/3 flex-col items-end text-right">
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 1.2, ease: "easeOut", delay: 0.6 }}
+                className="w-full max-w-sm space-y-8"
+              >
+                <div className="space-y-6 relative pb-8">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeSpice}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.5 }}
+                      className="space-y-5"
+                    >
+                      <div>
+                        <p className="font-body text-[9px] tracking-[0.3em] uppercase text-spice-brown/50 mb-1">Origin</p>
+                        <p className="font-display text-2xl text-spice-brown">{SHOWCASE_SPICES[activeSpice].origin}</p>
+                      </div>
+                      <div>
+                        <p className="font-body text-[9px] tracking-[0.3em] uppercase text-spice-brown/50 mb-1">Spice</p>
+                        <p className="font-display text-xl text-turmeric">{SHOWCASE_SPICES[activeSpice].name}</p>
+                      </div>
+                      <div>
+                        <p className="font-body text-[9px] tracking-[0.3em] uppercase text-spice-brown/50 mb-1">Farmer</p>
+                        <p className="font-accent italic text-lg text-spice-brown/90">{SHOWCASE_SPICES[activeSpice].farmer}</p>
+                      </div>
+                      <div>
+                        <p className="font-body text-[9px] tracking-[0.3em] uppercase text-spice-brown/50 mb-1">Harvest</p>
+                        <p className="font-body text-sm text-charcoal-soft">{SHOWCASE_SPICES[activeSpice].harvest}</p>
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                {/* Progress Line */}
+                <div className="w-full pt-6 border-t border-spice-brown/10 relative">
+                  <div className="flex justify-between items-center text-[8px] sm:text-[9px] font-body tracking-widest uppercase text-spice-brown/50 mb-2">
+                    <span>Farm</span>
+                    <span>Harvest</span>
+                    <span>Process</span>
+                    <span>Package</span>
+                    <span>You</span>
+                  </div>
+                  <div className="w-full h-px bg-spice-brown/20 relative">
+                    <motion.div 
+                      className="absolute left-0 top-0 h-full bg-turmeric"
+                      animate={{ width: ["0%", "100%", "0%"] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
 
-          {/* SCROLL INDICATOR */}
-          <div 
-            ref={scrollIndicatorRef}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-spice-brown/40 z-20 pointer-events-none"
-          >
-            <span className="font-body text-[9px] tracking-[0.3em] uppercase">Scroll to trace origin</span>
-            <div className="w-px h-8 bg-spice-brown/20 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1/2 bg-spice-brown animate-[bounce_2s_infinite]" />
+          {/* Bottom Statistics & Scroll Indicator */}
+          <div className="relative z-10 w-full border-t border-spice-brown/5 bg-cream/60 backdrop-blur-md">
+            <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-6">
+              
+              {/* Counters */}
+              <div ref={counterRef} className="flex flex-wrap justify-center md:justify-start gap-8 sm:gap-16">
+                {[
+                  { label: "Farmers", target: 150, suffix: "+" },
+                  { label: "Spice Varieties", target: 20, suffix: "+" },
+                  { label: "Traceable", target: 100, suffix: "%" },
+                  { label: "Happy Customers", target: 5000, suffix: "+" }
+                ].map((stat, idx) => (
+                  <div key={idx} className="flex flex-col items-center md:items-start">
+                    <span className="font-body text-4xl sm:text-5xl font-light tracking-tight text-spice-brown">
+                      {isCounterInView ? (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 1, delay: 0.2 * idx }}
+                        >
+                          {stat.target}
+                        </motion.span>
+                      ) : "0"}
+                      {stat.suffix}
+                    </span>
+                    <span className="font-body text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-charcoal-muted mt-1">{stat.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Scroll Indicator */}
+              <div className="flex items-center gap-4 text-spice-brown/60">
+                <span className="font-body text-[9px] tracking-[0.2em] uppercase hidden sm:block">Discover the Story</span>
+                <span className="font-body text-[9px] tracking-[0.2em] uppercase block sm:hidden">Scroll</span>
+                <div className="h-10 w-px bg-spice-brown/20 relative overflow-hidden">
+                  <motion.div 
+                    className="absolute top-0 left-0 w-full h-1/2 bg-turmeric"
+                    animate={{ y: [0, 40] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -479,7 +549,7 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-8">
             {FEATURED_PRODUCTS.map((product) => (
-              <Link key={product.id} to={`/product/${product.id}`} className="group block cursor-pointer">
+              <Link key={product.id} to={`/products/${product.slug}`} className="group block cursor-pointer">
                 <div className="aspect-[4/5] overflow-hidden mb-6 bg-cream-dark relative">
                   <img 
                     src={product.image} 
@@ -487,6 +557,20 @@ const Home = () => {
                     className="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-spice-brown/0 group-hover:bg-spice-brown/10 transition-colors duration-500" />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      toggleWishlist(product)
+                    }}
+                    className="absolute top-3 right-3 p-2 rounded-full bg-cream/80 backdrop-blur-sm shadow-sm hover:bg-cream transition-colors text-earth z-10 opacity-0 group-hover:opacity-100 duration-300"
+                    title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                  >
+                    {isWishlisted(product.id) ? (
+                      <HiHeart className="w-5 h-5 text-turmeric" />
+                    ) : (
+                      <HiOutlineHeart className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
                 <div className="space-y-2">
                   <h3 className="font-display text-lg text-spice-brown uppercase tracking-wide group-hover:text-turmeric transition-colors">{product.name}</h3>

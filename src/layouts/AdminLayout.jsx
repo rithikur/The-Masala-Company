@@ -24,6 +24,7 @@ import {
   HiOutlineUser,
   HiOutlineGlobeAlt,
 } from 'react-icons/hi'
+import AdminCommandPalette from '../components/admin/AdminCommandPalette'
 
 const NAV_GROUPS = [
   {
@@ -72,6 +73,19 @@ const NAV_GROUPS = [
 
 const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
   const { user, logout } = useAuth()
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
+
+  // Global hotkey for Command Palette (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCommandPaletteOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -353,16 +367,19 @@ const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
           {/* Right Area */}
           <div className="flex items-center gap-3">
             {/* Search command palette trigger */}
-            <button
-              className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-cream-dark bg-cream hover:bg-cream-dark/20 text-charcoal-muted text-xs font-body transition-colors"
-              onClick={() => alert('Search Command Palette coming in next phase. Shortcut: ⌘K or Ctrl+K')}
-            >
-              <HiOutlineSearch size={14} />
-              <span>Search...</span>
-              <kbd className="bg-white border border-cream-dark px-1.5 py-0.5 rounded text-[10px] font-sans">
-                ⌘K
-              </kbd>
-            </button>
+            <div className="flex-1 max-w-md hidden md:block ml-8">
+              <button 
+                onClick={() => setCommandPaletteOpen(true)}
+                className="w-full flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md text-gray-500 hover:bg-gray-200 transition-colors text-sm font-sans"
+              >
+                <HiOutlineSearch size={14} />
+                <span>Search...</span>
+                <div className="ml-auto flex items-center gap-1 opacity-60">
+                  <kbd className="bg-white px-1.5 py-0.5 rounded text-[10px] shadow-sm">⌘</kbd>
+                  <kbd className="bg-white px-1.5 py-0.5 rounded text-[10px] shadow-sm">K</kbd>
+                </div>
+              </button>
+            </div>
 
             {/* Notification bell */}
             <button
@@ -437,6 +454,8 @@ const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
           {children}
         </main>
       </div>
+      
+      <AdminCommandPalette isOpen={commandPaletteOpen} onClose={() => setCommandPaletteOpen(false)} />
     </div>
   )
 }

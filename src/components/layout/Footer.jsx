@@ -9,20 +9,22 @@ import {
 import Divider from '../common/Divider'
 
 const COLLECTIONS = [
-  'Whole Spices',
-  'Ground Spices',
-  'Spice Blends',
-  'Seeds & Pods',
-  'Exotic & Rare',
-  'Gift Sets',
+  { label: 'Whole Spices', path: '/collections' },
+  { label: 'Ground Spices', path: '/collections' },
+  { label: 'Spice Blends', path: '/collections' },
+  { label: 'Seeds & Pods', path: '/collections' },
+  { label: 'Exotic & Rare', path: '/collections' },
+  { label: 'Gift Sets', path: '/collections' },
 ]
 
 const CUSTOMER_CARE = [
-  'Track Your Order',
-  'Shipping Policy',
-  'Returns & Refunds',
-  'FAQ',
-  'Bulk Orders',
+  { label: 'Track Your Order', path: '/track-order' },
+  { label: 'Shipping Policy', path: '/shipping-policy' },
+  { label: 'Returns & Refunds', path: '/returns-refunds' },
+  { label: 'FAQ', path: '/faq' },
+  { label: 'Bulk Orders', path: '/bulk-orders' },
+  { label: 'About Us', path: '/about' },
+  { label: 'Contact Us', path: '/contact' },
 ]
 
 const SOCIAL_LINKS = [
@@ -78,13 +80,14 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2.5" role="list">
               {COLLECTIONS.map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
+                <li key={item.label}>
+                  <Link
+                    to={item.path}
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     className="font-body text-sm text-cream/55 hover:text-cream transition-colors duration-150"
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -97,13 +100,14 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2.5" role="list">
               {CUSTOMER_CARE.map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
+                <li key={item.label}>
+                  <Link
+                    to={item.path}
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                     className="font-body text-sm text-cream/55 hover:text-cream transition-colors duration-150"
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -145,9 +149,11 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-cream/35 font-body">
           <p>© {new Date().getFullYear()} The Masala Company. All Rights Reserved.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-cream/60 transition-colors duration-150">Privacy Policy</a>
+            <Link to="/privacy-policy" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-cream/60 transition-colors duration-150">Privacy Policy</Link>
             <span className="h-3 w-px bg-cream/20" />
-            <a href="#" className="hover:text-cream/60 transition-colors duration-150">Terms of Service</a>
+            <Link to="/terms-of-service" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-cream/60 transition-colors duration-150">Terms of Service</Link>
+            <span className="h-3 w-px bg-cream/20" />
+            <Link to="/admin/login" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-ochre transition-colors duration-150">Admin Login</Link>
           </div>
         </div>
       </div>

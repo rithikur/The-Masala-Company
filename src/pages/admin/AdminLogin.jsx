@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-hot-toast'
+import { HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi'
 
 const AdminLogin = () => {
   const { login } = useAuth()
@@ -9,6 +10,7 @@ const AdminLogin = () => {
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async (e) => {
@@ -75,17 +77,26 @@ const AdminLogin = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 relative">
             <label className="text-[9px] text-spice-brown/60 uppercase tracking-[0.25em] font-semibold">Secure Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-transparent border-b border-cream-dark focus:border-turmeric py-3 text-sm text-spice-brown outline-none transition-all duration-300 placeholder:text-spice-brown/20 font-body rounded-none"
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-transparent border-b border-cream-dark focus:border-turmeric py-3 pr-10 text-sm text-spice-brown outline-none transition-all duration-300 placeholder:text-spice-brown/20 font-body rounded-none"
+                placeholder="••••••••"
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-spice-brown/40 hover:text-spice-brown"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <HiOutlineEyeOff size={18} /> : <HiOutlineEye size={18} />}
+              </button>
+            </div>
           </div>
 
           <button

@@ -240,3 +240,30 @@ def delete_product(product_id):
 
     except Exception as e:
         return error(f"Failed to delete product: {str(e)}", 500)
+
+
+# ---------------------------------------------------------------------------
+# PUT /api/admin/products/variants/:id/inventory
+# ---------------------------------------------------------------------------
+@admin_products_bp.route('/variants/<string:variant_id>/inventory', methods=['PUT'])
+@jwt_required()
+@admin_required
+def update_inventory(variant_id):
+    """Update just the inventory count for a variant."""
+    data = request.get_json()
+    if not data or 'inventory_count' not in data:
+        return error("inventory_count is required", 400)
+        
+    sb_admin = get_supabase_admin()
+    
+    try:
+        res = sb_admin.table('product_variants').update({
+            "inventory_count": data['inventory_count']
+        }).eq('id', variant_id).execute()
+        
+        if not res.data:
+            return error("Variant not found", 404)
+            
+        return success(res.data[0], "Inventory updated successfully")
+    except Exception as e:
+        return error(str(e), 500)

@@ -120,7 +120,7 @@ const Products = () => {
 
           <Link
             to="/admin/products/new"
-            className="inline-flex items-center gap-2 bg-charcoal-dark text-cream px-6 py-2.5 text-sm uppercase tracking-wider font-body hover:bg-spice-brown transition-colors rounded-none"
+            className="inline-flex items-center gap-2 bg-charcoal text-cream px-6 py-2.5 text-sm uppercase tracking-wider font-body hover:bg-spice-brown transition-colors rounded-none"
           >
             <HiOutlinePlus /> Add Product
           </Link>
@@ -160,7 +160,7 @@ const Products = () => {
                           {p.status}
                         </span>
                       </td>
-                      <td className="py-4 px-6 font-serif">
+                      <td className="py-4 px-6 font-['Outfit']">
                         {minPrice > 0 ? `From ₹${minPrice.toFixed(2)}` : 'N/A'}
                       </td>
                       <td className="py-4 px-6 font-sans">

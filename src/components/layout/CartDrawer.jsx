@@ -111,9 +111,9 @@ const CartDrawer = ({ isOpen, onClose }) => {
                           </button>
                         </div>
 
-                        <span className="font-serif text-sm text-earth">
+                        <div className="font-['Outfit'] text-sm text-earth">
                           ₹{(parseFloat(item.variant.price) * item.quantity).toFixed(2)}
-                        </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -126,7 +126,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
               <div className="p-6 border-t border-earth/10 bg-cream-dark">
                 <div className="flex justify-between mb-4">
                   <span className="font-serif text-sm text-earth uppercase tracking-wider">Subtotal</span>
-                  <span className="font-serif text-lg text-earth">₹{subtotal.toFixed(2)}</span>
+                  <span className="font-['Outfit'] font-medium text-lg text-earth">₹{subtotal.toFixed(2)}</span>
                 </div>
                 <p className="font-sans text-[10px] text-earth/50 italic mb-6">
                   Shipping, taxes, and discounts calculated at checkout.

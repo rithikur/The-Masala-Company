@@ -130,7 +130,7 @@ const Orders = () => {
                         <div>{o.shipping_address?.first_name} {o.shipping_address?.last_name}</div>
                         <div className="text-xs text-gray-400">{o.user?.email}</div>
                       </td>
-                      <td className="py-4 px-6 font-serif">₹{parseFloat(o.total_amount).toFixed(2)}</td>
+                      <td className="py-4 px-6 font-['Outfit']">₹{parseFloat(o.total_amount).toFixed(2)}</td>
                       <td className="py-4 px-6">
                         <span className={`inline-block px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-none ${
                           o.status === 'delivered' ? 'bg-green-50 text-green-700' :
@@ -166,7 +166,7 @@ const Orders = () => {
               <div className="flex justify-between items-center border-b border-gray-100 pb-4">
                 <div>
                   <span className="text-xs text-gray-400 uppercase font-mono">Invoice Reference</span>
-                  <h3 className="font-serif text-lg font-bold text-charcoal-dark">{selectedOrder.id}</h3>
+                  <h3 className="font-['Outfit'] text-lg font-bold text-charcoal-dark">{selectedOrder.id}</h3>
                 </div>
                 <button 
                   onClick={() => setSelectedOrder(null)} 
@@ -231,7 +231,7 @@ const Orders = () => {
                   ))}
                 </div>
 
-                <div className="flex justify-between items-center pt-4 border-t border-gray-100 text-base font-serif font-bold text-charcoal-dark">
+                <div className="flex justify-between items-center pt-4 border-t border-gray-100 text-base font-['Outfit'] font-bold text-charcoal-dark">
                   <span>Grand Total</span>
                   <span>₹{parseFloat(selectedOrder.total_amount).toFixed(2)}</span>
                 </div>

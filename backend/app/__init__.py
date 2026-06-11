@@ -23,6 +23,7 @@ def create_app(config_name='development'):
     from app.routes.admin_analytics import admin_analytics_bp
     from app.routes.admin_orders import admin_orders_bp
     from app.routes.admin_reviews import admin_reviews_bp
+    from app.routes.admin_categories import admin_categories_bp
 
     app.register_blueprint(health_bp,    url_prefix='/api')
     app.register_blueprint(auth_bp,      url_prefix='/api/auth')
@@ -36,6 +37,7 @@ def create_app(config_name='development'):
     app.register_blueprint(admin_analytics_bp, url_prefix='/api/admin/analytics')
     app.register_blueprint(admin_orders_bp, url_prefix='/api/admin/orders')
     app.register_blueprint(admin_reviews_bp, url_prefix='/api/admin/reviews')
+    app.register_blueprint(admin_categories_bp, url_prefix='/api/admin/categories')
 
     # JWT error handlers (return JSON, not HTML)
     @jwt.expired_token_loader
@@ -61,6 +63,10 @@ def create_app(config_name='development'):
 
     @app.errorhandler(500)
     def server_error(e):
+        import traceback
+        with open('error_log.txt', 'w') as f:
+            f.write(f"INTERNAL SERVER ERROR: {e}\n")
+            f.write(traceback.format_exc())
         return jsonify({'error': 'Internal server error'}), 500
 
     return app

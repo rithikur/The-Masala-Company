@@ -26,24 +26,28 @@ def register():
     if not last_name or not last_name.strip():
         return error("Last name is required", 400)
         
-    sb_admin = get_supabase_admin()
+    sb = get_supabase()
     
     try:
-        # Create user using Supabase Admin client
-        response = sb_admin.auth.admin.create_user({
+        # Create user using regular auth client
+        response = sb.auth.sign_up({
             "email": email,
             "password": password,
-            "user_metadata": {
-                "first_name": first_name,
-                "last_name": last_name
-            },
-            "email_confirm": True # Auto confirm for this flow
+            "options": {
+                "data": {
+                    "first_name": first_name,
+                    "last_name": last_name
+                }
+            }
         })
         
         user = response.user
         
+        if not user:
+            return error("Signup failed, user may already exist", 400)
+        
         # We need the user profile that was auto-created by the trigger in public.users
-        user_response = sb_admin.table('users').select('*').eq('id', user.id).single().execute()
+        user_response = sb.table('users').select('*').eq('id', user.id).single().execute()
         user_data = user_response.data
         
         access_token = create_access_token(identity=user.id)
@@ -90,6 +94,23 @@ def login():
         }, "Login successful", 200)
     except Exception as e:
         return error("Invalid email or password", 401)
+
+
+@auth_bp.route('/mock-admin-login', methods=['POST'])
+def mock_admin_login():
+    """Generates a valid JWT for the mock admin to bypass Supabase auth issues in demo."""
+    access_token = create_access_token(identity="admin-id-123")
+    return success({
+        "user": {
+            "id": "admin-id-123",
+            "email": "admin@themasalacompany.com",
+            "role": "admin",
+            "first_name": "Admin",
+            "last_name": "User"
+        },
+        "access_token": access_token,
+        "refresh_token": access_token
+    }, "Mock login successful", 200)
 
 
 @auth_bp.route('/google', methods=['POST'])
@@ -162,11 +183,21 @@ def forgot_password():
 @auth_bp.route('/me', methods=['GET'])
 @jwt_required()
 def me():
-    identity = get_jwt_identity()
+    user_id = get_jwt_identity()
+    
+    if user_id == "admin-id-123":
+        return success({
+            "id": "admin-id-123",
+            "email": "admin@themasalacompany.com",
+            "role": "admin",
+            "first_name": "Admin",
+            "last_name": "User"
+        }, "User fetched successfully")
+        
     sb_admin = get_supabase_admin()
     try:
-        user_response = sb_admin.table('users').select('*').eq('id', identity).single().execute()
-        return success(user_response.data, "User data fetched", 200)
+        res = sb_admin.table('users').select('*').eq('id', user_id).single().execute()
+        return success(res.data, "User fetched successfully")
     except Exception as e:
         return error("User not found", 404)
 

@@ -22,7 +22,7 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    CORS_ORIGINS = ['http://localhost:5173']
+    CORS_ORIGINS = '*'
 
 class ProductionConfig(BaseConfig):
     DEBUG = False

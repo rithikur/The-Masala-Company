@@ -42,7 +42,7 @@ const Login = () => {
       {/* Left side - Full-bleed visual split */}
       <div className="hidden md:flex flex-1 relative items-center justify-center p-12 bg-charcoal">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity" 
+          className="absolute inset-0 bg-cover bg-center opacity-40" 
           style={{ backgroundImage: `url(${loginBg})` }}
         ></div>
         <div className="relative z-10 text-cream max-w-lg text-center md:text-left">
@@ -121,12 +121,6 @@ const Login = () => {
               Don't have an account?{' '}
               <Link to="/register" className="font-semibold text-spice-brown hover:underline tracking-wide">
                 Create One
-              </Link>
-            </span>
-            <span>
-              Are you an administrator?{' '}
-              <Link to="/admin/login" className="font-semibold text-ochre hover:underline tracking-wide">
-                Admin Portal Entrance
               </Link>
             </span>
           </p>

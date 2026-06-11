@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { gsap } from 'gsap'
 import PageWrapper from '../../components/layout/PageWrapper'
 import SEOHead from '../../components/seo/SEOHead'
 import { getProductBySlug } from '../../services/products'
 import { toast } from 'react-hot-toast'
 import useCart from '../../hooks/useCart'
-import { HiOutlineArrowLeft, HiOutlineChevronDown } from 'react-icons/hi'
+import useWishlist from '../../hooks/useWishlist'
+import { HiOutlineArrowLeft, HiOutlineChevronDown, HiHeart, HiOutlineHeart } from 'react-icons/hi'
 
 // Premium mock data fallback if backend is unavailable
 const MOCK_PRODUCTS = [
@@ -90,6 +91,7 @@ const MOCK_PRODUCTS = [
 
 const ProductDetail = () => {
   const { slug } = useParams()
+  const navigate = useNavigate()
   const [product, setProduct] = useState(null)
   const [selectedVariant, setSelectedVariant] = useState(null)
   const [selectedImage, setSelectedImage] = useState('')
@@ -97,11 +99,18 @@ const ProductDetail = () => {
   const [openAccordions, setOpenAccordions] = useState({ tasting: true, sourcing: false })
   const [isAdding, setIsAdding] = useState(false)
   const [btnText, setBtnText] = useState('Add to Blend')
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 })
+
+  const { addToCart } = useCart()
+  const { toggleWishlist, isWishlisted } = useWishlist()
 
   const addToCartBtnRef = useRef(null)
   const carouselRef = useRef(null)
 
   useEffect(() => {
+    // Ensure we start at the top of the new product page
+    window.scrollTo(0, 0)
+    
     const fetchProduct = async () => {
       setLoading(true)
       try {
@@ -153,15 +162,33 @@ const ProductDetail = () => {
       .to(addToCartBtnRef.current, { scale: 0.95, duration: 0.1, ease: 'power2.out' })
       .to(addToCartBtnRef.current, { scale: 1, duration: 0.15, ease: 'power2.out' })
 
+    // Actually add the item to the cart
+    addToCart(product, selectedVariant, 1)
+
     setTimeout(() => {
       setBtnText('Added to Bag')
       toast.success(`${product.name} (${selectedVariant.weight}) added to your collection.`)
       
+      // Navigate to the new full-page cart
+      navigate('/cart')
+
       setTimeout(() => {
         setIsAdding(false)
         setBtnText('Add to Blend')
       }, 2000)
-    }, 1200)
+    }, 600)
+  }
+
+  // Handle Image Zoom
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - left) / width) * 100
+    const y = ((e.clientY - top) / height) * 100
+    setZoomPosition({ x, y })
+  }
+
+  const handleMouseLeave = () => {
+    setZoomPosition({ x: 50, y: 50 })
   }
 
   // Scroll Related Blends Carousel
@@ -225,11 +252,16 @@ const ProductDetail = () => {
           
           {/* Left: Sticky Image Gallery */}
           <div className="lg:sticky lg:top-32 flex flex-col gap-6">
-            <div className="aspect-[4/5] w-full overflow-hidden bg-cream-dark border border-earth/5 relative">
+            <div 
+              className="aspect-[4/5] w-full overflow-hidden bg-cream-dark border border-earth/5 relative group cursor-zoom-in"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
               <img 
                 src={selectedImage} 
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[2]"
+                style={{ transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%` }}
                 onError={(e) => {
                   e.target.onerror = null
                   e.target.src = '/images/product_garam_masala.png'
@@ -278,7 +310,7 @@ const ProductDetail = () => {
 
             {/* Variant selector */}
             <div>
-              <h3 className="font-sans text-[10px] uppercase tracking-[0.2em] text-ochre mb-4">Select Weight</h3>
+              <h3 className="font-['Outfit'] text-[10px] uppercase tracking-[0.2em] text-ochre mb-4">Select Weight</h3>
               <div className="flex flex-wrap gap-4">
                 {product.variants?.map((v) => {
                   const isSelected = selectedVariant?.id === v.id
@@ -286,7 +318,7 @@ const ProductDetail = () => {
                     <button
                       key={v.id}
                       onClick={() => setSelectedVariant(v)}
-                      className={`font-serif text-sm px-6 py-3 transition-all duration-300 border ${
+                      className={`font-['Outfit'] text-sm px-6 py-3 transition-all duration-300 border ${
                         isSelected 
                           ? 'border-earth bg-earth text-cream' 
                           : 'border-earth/20 hover:border-earth/50 text-earth'
@@ -302,26 +334,41 @@ const ProductDetail = () => {
             {/* Price display and CTA button */}
             <div className="flex flex-col gap-4 mt-4">
               <div className="flex items-baseline gap-4">
-                <span className="font-serif text-3xl text-earth">
+                <span className="font-['Outfit'] font-medium text-3xl tracking-wide text-earth">
                   ₹{selectedVariant ? parseFloat(selectedVariant.price).toFixed(2) : '0.00'}
                 </span>
                 {selectedVariant?.inventory_count <= 0 && (
-                  <span className="font-sans text-xs text-orange-600 uppercase tracking-widest">Out of Stock</span>
+                  <span className="font-['Outfit'] text-xs text-orange-600 uppercase tracking-widest">Out of Stock</span>
                 )}
               </div>
 
-              <button
-                ref={addToCartBtnRef}
-                onClick={handleAddToCart}
-                disabled={isAdding || (selectedVariant && selectedVariant.inventory_count <= 0)}
-                className={`w-full py-4 font-serif text-xs uppercase tracking-[0.2em] transition-all duration-300 border ${
-                  isAdding 
-                    ? 'bg-ochre border-ochre text-cream' 
-                    : 'bg-earth border-earth text-cream hover:bg-transparent hover:text-earth'
-                }`}
-              >
-                {btnText}
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  ref={addToCartBtnRef}
+                  onClick={handleAddToCart}
+                  disabled={isAdding || (selectedVariant && selectedVariant.inventory_count <= 0)}
+                  className={`flex-1 py-4 font-serif text-xs uppercase tracking-[0.2em] transition-all duration-300 border ${
+                    isAdding 
+                      ? 'bg-ochre border-ochre text-cream' 
+                      : 'bg-earth border-earth text-cream hover:bg-transparent hover:text-earth'
+                  }`}
+                >
+                  {btnText}
+                </button>
+                <button
+                  onClick={() => toggleWishlist(product)}
+                  className={`p-4 border transition-all duration-300 flex-shrink-0 ${
+                    isWishlisted(product.id) ? 'border-turmeric bg-turmeric/5 text-turmeric' : 'border-earth/20 hover:border-earth text-earth'
+                  }`}
+                  title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                >
+                  {isWishlisted(product.id) ? (
+                    <HiHeart className="w-5 h-5" />
+                  ) : (
+                    <HiOutlineHeart className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Details Accordions */}
@@ -421,9 +468,9 @@ const ProductDetail = () => {
                     <h3 className="font-serif text-base text-earth group-hover:text-ochre transition-colors duration-300">
                       {p.name}
                     </h3>
-                    <span className="font-serif text-sm text-earth/70">
+                    <div className="font-['Outfit'] text-sm text-earth/70">
                       From ₹{startingPrice.toFixed(2)}
-                    </span>
+                    </div>
                   </div>
                 </Link>
               )

@@ -58,7 +58,7 @@ const Register = () => {
       {/* Left side - Stark, high-end editorial splash */}
       <div className="hidden md:flex flex-1 relative items-center justify-center p-12 bg-charcoal">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity" 
+          className="absolute inset-0 bg-cover bg-center opacity-40" 
           style={{ backgroundImage: `url(${registerBg})` }}
         ></div>
         <div className="relative z-10 text-cream max-w-lg text-center md:text-left">
@@ -151,8 +151,8 @@ const Register = () => {
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
               />
-              <label htmlFor="terms" className="ml-3 text-xs text-charcoal-soft font-body font-light cursor-pointer select-none">
-                I agree to the Terms of Service and Privacy Policy
+              <label htmlFor="terms" className="ml-3 text-xs text-charcoal-soft font-body font-light select-none">
+                I agree to the <Link to="/terms-of-service" className="underline hover:text-spice-brown" target="_blank" rel="noopener noreferrer">Terms of Service</Link> and <Link to="/privacy-policy" className="underline hover:text-spice-brown" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>
               </label>
             </div>
 

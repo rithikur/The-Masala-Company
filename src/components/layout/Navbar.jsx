@@ -5,8 +5,8 @@ import Badge from '../common/Badge'
 import useCart from '../../hooks/useCart'
 import useWishlist from '../../hooks/useWishlist'
 import MobileMenu from './MobileMenu'
-import CartDrawer from './CartDrawer'
 import { useAuth } from '../../context/AuthContext'
+import SearchModal from '../common/SearchModal'
 
 const NAV_LINKS = [
   { label: 'Home', to: '/' },
@@ -18,15 +18,18 @@ const NAV_LINKS = [
 const Navbar = ({ transparent = false, darkText = false }) => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [cartOpen, setCartOpen] = useState(false)
   const { itemCount: cartCount } = useCart()
   const { itemCount: wishCount } = useWishlist()
   const { isAuthenticated, user, logout } = useAuth()
+  const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   const isScrolled = scrolled || !transparent
@@ -70,20 +73,18 @@ const Navbar = ({ transparent = false, darkText = false }) => {
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2 group"
             aria-label="The Masala Company — Home"
           >
-            <span className="hidden sm:block h-px w-8 bg-spice-brown/40 group-hover:w-12 transition-all duration-300" />
             <span
               className={[
-                'font-display font-bold text-sm tracking-[0.2em] uppercase',
+                'font-display font-semibold text-lg tracking-widest uppercase',
                 textClass,
                 'transition-colors duration-300',
               ].join(' ')}
             >
               The Masala Company
             </span>
-            <span className="hidden sm:block h-px w-8 bg-spice-brown/40 group-hover:w-12 transition-all duration-300" />
           </Link>
 
           {/* Desktop Nav Links */}
@@ -121,6 +122,7 @@ const Navbar = ({ transparent = false, darkText = false }) => {
           <div className="flex items-center gap-1">
             {/* Search */}
             <button
+              onClick={() => setSearchOpen(true)}
               aria-label="Search"
               className={[
                 'p-2 rounded-xs transition-colors duration-200',
@@ -131,7 +133,8 @@ const Navbar = ({ transparent = false, darkText = false }) => {
             </button>
 
             {/* Wishlist */}
-            <button
+            <Link
+              to="/profile?tab=wishlist"
               aria-label={`Wishlist${wishCount > 0 ? `, ${wishCount} items` : ''}`}
               className={[
                 'relative p-2 rounded-xs transition-colors duration-200',
@@ -144,11 +147,11 @@ const Navbar = ({ transparent = false, darkText = false }) => {
                   {wishCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* Cart */}
-            <button
-              onClick={() => setCartOpen(true)}
+            <Link
+              to="/cart"
               aria-label={`Cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}
               className={[
                 'relative p-2 rounded-xs transition-colors duration-200',
@@ -161,25 +164,26 @@ const Navbar = ({ transparent = false, darkText = false }) => {
                   {cartCount}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* Login / Profile */}
             {isAuthenticated ? (
-              <div className="relative ml-2 hidden sm:block group">
-                <button className="flex items-center gap-2 focus:outline-none mt-1">
+              <div className="relative ml-2 hidden sm:block group flex items-center h-full">
+                <button className="flex items-center gap-2 focus:outline-none py-2">
                   {user?.avatar_url ? (
                     <img src={user.avatar_url} alt={user.full_name} className="w-8 h-8 rounded-full object-cover border border-spice-brown/30" />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-turmeric text-cream flex items-center justify-center font-bold text-xs uppercase">
-                      {user?.full_name?.charAt(0) || 'U'}
+                      {user?.first_name?.charAt(0) || 'U'}
                     </div>
                   )}
                 </button>
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg border border-cream-dark opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="py-1">
+                {/* Dropdown Menu with negative top margin and transparent padding to bridge hover gap perfectly */}
+                <div className="absolute right-0 top-full -mt-2 pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="bg-white rounded-md shadow-lg border border-cream-dark py-1">
                     <Link to="/profile" className="block px-4 py-2 text-sm text-charcoal-soft hover:bg-cream-dark hover:text-spice-brown">My Account</Link>
-                    <Link to="/orders" className="block px-4 py-2 text-sm text-charcoal-soft hover:bg-cream-dark hover:text-spice-brown">Orders</Link>
-                    <Link to="/wishlist" className="block px-4 py-2 text-sm text-charcoal-soft hover:bg-cream-dark hover:text-spice-brown">Wishlist</Link>
+                    <Link to="/profile?tab=orders" className="block px-4 py-2 text-sm text-charcoal-soft hover:bg-cream-dark hover:text-spice-brown">Orders</Link>
+                    <Link to="/profile?tab=wishlist" className="block px-4 py-2 text-sm text-charcoal-soft hover:bg-cream-dark hover:text-spice-brown">Wishlist</Link>
                     <button onClick={logout} className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-cream-dark">Logout</button>
                   </div>
                 </div>
@@ -214,8 +218,8 @@ const Navbar = ({ transparent = false, darkText = false }) => {
         </nav>
       </header>
 
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       <MobileMenu isOpen={mobileOpen} onClose={() => setMobileOpen(false)} links={NAV_LINKS} />
-      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   )
 }

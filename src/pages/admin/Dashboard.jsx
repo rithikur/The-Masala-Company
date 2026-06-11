@@ -87,7 +87,7 @@ const Dashboard = () => {
           <div className="bg-white border border-cream-dark p-6 rounded-none flex items-center justify-between">
             <div>
               <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Total Revenue</span>
-              <h3 className="font-serif text-2xl text-charcoal-dark font-semibold mt-1">₹{totalRevenue.toLocaleString('en-IN')}</h3>
+              <h3 className="font-['Outfit'] text-2xl text-charcoal-dark font-semibold mt-1">₹{totalRevenue.toLocaleString('en-IN')}</h3>
             </div>
             <div className="p-3 bg-amber-50 text-ochre">
               <span className="font-serif text-lg font-bold">₹</span>
@@ -98,7 +98,7 @@ const Dashboard = () => {
           <div className="bg-white border border-cream-dark p-6 rounded-none flex items-center justify-between">
             <div>
               <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Active Orders</span>
-              <h3 className="font-serif text-2xl text-charcoal-dark font-semibold mt-1">{activeOrdersCount}</h3>
+              <h3 className="font-['Outfit'] text-2xl text-charcoal-dark font-semibold mt-1">{activeOrdersCount}</h3>
             </div>
             <div className="p-3 bg-gray-50 text-gray-600">
               <span className="font-serif text-lg font-bold">#</span>
@@ -109,7 +109,7 @@ const Dashboard = () => {
           <div className="bg-white border border-cream-dark p-6 rounded-none flex items-center justify-between">
             <div>
               <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Active Buyers</span>
-              <h3 className="font-serif text-2xl text-charcoal-dark font-semibold mt-1">{customerCount}</h3>
+              <h3 className="font-['Outfit'] text-2xl text-charcoal-dark font-semibold mt-1">{customerCount}</h3>
             </div>
             <div className="p-3 bg-green-50 text-green-700">
               <span className="font-serif text-lg font-bold">👤</span>
@@ -120,7 +120,7 @@ const Dashboard = () => {
           <div className="bg-white border border-cream-dark p-6 rounded-none flex items-center justify-between">
             <div>
               <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">Low Stock Alerts</span>
-              <h3 className="font-serif text-2xl text-red-600 font-semibold mt-1">{lowStockAlerts} items</h3>
+              <h3 className="font-['Outfit'] text-2xl text-red-600 font-semibold mt-1">{lowStockAlerts} items</h3>
             </div>
             <div className="p-3 bg-red-50 text-red-600">
               <span className="font-serif text-lg font-bold">!</span>

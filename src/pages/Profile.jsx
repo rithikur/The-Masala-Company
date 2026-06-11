@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import PageWrapper from '../components/layout/PageWrapper'
 import SEOHead from '../components/seo/SEOHead'
 import useAuth from '../hooks/useAuth'
@@ -78,9 +78,12 @@ const MOCK_ORDERS = [
 const Profile = () => {
   const { user, logout, isAuthenticated } = useAuth()
   const { items: wishlistItems, toggleWishlist } = useWishlist()
+  const location = useLocation()
   const navigate = useNavigate()
-
-  const [activeTab, setActiveTab] = useState('orders') // 'orders' | 'address' | 'wishlist' | 'details'
+  
+  const queryParams = new URLSearchParams(location.search)
+  const initialTab = queryParams.get('tab') || 'orders'
+  const [activeTab, setActiveTab] = useState(initialTab) // 'orders' | 'address' | 'wishlist' | 'details'
   const [orders, setOrders] = useState([])
   const [loadingOrders, setLoadingOrders] = useState(true)
 
@@ -212,7 +215,10 @@ const Profile = () => {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id)
+                    navigate(`/profile?tab=${tab.id}`, { replace: true })
+                  }}
                   className={`w-full flex items-center gap-3 px-5 py-4 font-serif text-sm border-l-2 text-left transition-all duration-300 rounded-none ${
                     isActive
                       ? 'border-ochre bg-cream-dark text-earth font-medium'

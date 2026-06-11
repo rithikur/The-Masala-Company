@@ -8,6 +8,17 @@ import ProductList from '../pages/products/ProductList'
 import ProductDetail from '../pages/products/ProductDetail'
 import Checkout from '../pages/Checkout'
 import Profile from '../pages/Profile'
+import Collections from '../pages/Collections'
+import Cart from '../pages/Cart'
+import TermsOfService from '../pages/TermsOfService'
+import PrivacyPolicy from '../pages/PrivacyPolicy'
+import About from '../pages/About'
+import Contact from '../pages/Contact'
+import TrackOrder from '../pages/TrackOrder'
+import ShippingPolicy from '../pages/ShippingPolicy'
+import ReturnsRefunds from '../pages/ReturnsRefunds'
+import FAQ from '../pages/FAQ'
+import BulkOrders from '../pages/BulkOrders'
 
 // Auth Pages
 import Login from '../pages/auth/Login'
@@ -45,6 +56,17 @@ const AppRouter = () => {
       <Route path="/products/:slug" element={<ProductDetail />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/collections" element={<Collections />} />
+      <Route path="/terms-of-service" element={<TermsOfService />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/track-order" element={<TrackOrder />} />
+      <Route path="/shipping-policy" element={<ShippingPolicy />} />
+      <Route path="/returns-refunds" element={<ReturnsRefunds />} />
+      <Route path="/faq" element={<FAQ />} />
+      <Route path="/bulk-orders" element={<BulkOrders />} />
 
       {/* ─── Auth ─── */}
       <Route path="/login"           element={<GuestGuard><Login /></GuestGuard>} />
