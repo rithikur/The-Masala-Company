@@ -326,7 +326,7 @@ const Home = () => {
                     exit={{ opacity: 0, y: -30 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                   >
-                    <h1 className="font-display text-5xl lg:text-[4rem] font-medium text-spice-brown uppercase leading-[0.85] tracking-tight mb-4 flex flex-col">
+                    <h1 className="font-display text-4xl lg:text-[3rem] font-medium text-spice-brown uppercase leading-[0.85] tracking-tight mb-4 flex flex-col">
                       <span>The</span>
                       <span>Masala</span>
                       <span>Company</span>
@@ -349,7 +349,7 @@ const Home = () => {
                     <p className="font-body text-xs tracking-[0.4em] uppercase text-turmeric mb-3 font-semibold">
                       {SHOWCASE_SPICES[activeSpice].chapter}
                     </p>
-                    <h2 className="font-display text-3xl sm:text-4xl lg:text-[4rem] font-bold text-spice-brown uppercase leading-[0.9] tracking-tight mb-4 text-balance">
+                    <h2 className="font-display text-3xl sm:text-4xl lg:text-[3rem] font-bold text-spice-brown uppercase leading-[0.9] tracking-tight mb-4 text-balance">
                       {SHOWCASE_SPICES[activeSpice].chapterTitle}
                     </h2>
                     <p className="font-body text-sm xl:text-base text-charcoal-muted max-w-sm mb-6 leading-relaxed">

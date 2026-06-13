@@ -75,7 +75,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 14.4px; /* 90% of 16px — matches user's preferred 90% browser zoom */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
