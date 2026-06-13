@@ -28,10 +28,25 @@ const SearchModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (query.trim()) {
-      navigate(`/products?search=${encodeURIComponent(query.trim())}`)
-      onClose()
-    }
+    const q = query.trim()
+    if (!q) return
+
+    // Save to real search history in localStorage
+    try {
+      const existing = JSON.parse(localStorage.getItem('masala_search_history') || '[]')
+      const idx = existing.findIndex(s => s.term.toLowerCase() === q.toLowerCase())
+      if (idx > -1) {
+        existing[idx].frequency += 1
+        existing[idx].last_searched = new Date().toISOString()
+      } else {
+        existing.unshift({ id: Date.now(), term: q, frequency: 1, last_searched: new Date().toISOString(), results_avg: 0 })
+      }
+      // Keep max 50 entries
+      localStorage.setItem('masala_search_history', JSON.stringify(existing.slice(0, 50)))
+    } catch (_) {}
+
+    navigate(`/products?search=${encodeURIComponent(q)}`)
+    onClose()
   }
 
   return (

@@ -5,39 +5,20 @@ import api from '../../services/api'
 import { toast } from 'react-hot-toast'
 import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineSearch } from 'react-icons/hi'
 
-// Mock products for fallback
+// All 12 mock products — matches the full storefront catalog
 const MOCK_ADMIN_PRODUCTS = [
-  {
-    id: '1',
-    name: 'Royal Garam Masala',
-    slug: 'royal-garam-masala',
-    origin: 'Malabar Coast, Kerala',
-    status: 'published',
-    variants: [
-      { id: 'v1', weight: '100g', price: 350.00, inventory_count: 25, sku: 'TMC-RGM-100' },
-      { id: 'v2', weight: '250g', price: 790.00, inventory_count: 12, sku: 'TMC-RGM-250' }
-    ]
-  },
-  {
-    id: '2',
-    name: 'Erode Single-Origin Turmeric',
-    slug: 'erode-turmeric',
-    origin: 'Erode, Tamil Nadu',
-    status: 'published',
-    variants: [
-      { id: 'v3', weight: '100g', price: 280.00, inventory_count: 40, sku: 'TMC-ERT-100' }
-    ]
-  },
-  {
-    id: '3',
-    name: 'Kashmiri Lal Mirch',
-    slug: 'kashmiri-lal-mirch',
-    origin: 'Pampore, Kashmir',
-    status: 'draft',
-    variants: [
-      { id: 'v4', weight: '100g', price: 320.00, inventory_count: 0, sku: 'TMC-KLM-100' }
-    ]
-  }
+  { id: '1', name: 'Royal Garam Masala', slug: 'royal-garam-masala', origin: 'Malabar Coast, Kerala', status: 'published', variants: [{ id: 'v1a', weight: '100g', price: 350.00, inventory_count: 25, sku: 'TMC-RGM-100' }, { id: 'v1b', weight: '250g', price: 790.00, inventory_count: 12, sku: 'TMC-RGM-250' }] },
+  { id: '2', name: 'Erode Single-Origin Turmeric', slug: 'erode-turmeric', origin: 'Erode, Tamil Nadu', status: 'published', variants: [{ id: 'v2a', weight: '100g', price: 280.00, inventory_count: 40, sku: 'TMC-ERT-100' }, { id: 'v2b', weight: '250g', price: 620.00, inventory_count: 18, sku: 'TMC-ERT-250' }] },
+  { id: '3', name: 'Green Cardamom Pods', slug: 'green-cardamom', origin: 'Kerala Highlands', status: 'published', variants: [{ id: 'v3a', weight: '50g', price: 420.00, inventory_count: 30, sku: 'TMC-GCP-50' }, { id: 'v3b', weight: '100g', price: 790.00, inventory_count: 14, sku: 'TMC-GCP-100' }] },
+  { id: '4', name: 'Ceylon Cinnamon Quills', slug: 'ceylon-cinnamon', origin: 'Sri Lanka', status: 'published', variants: [{ id: 'v4a', weight: '50g', price: 380.00, inventory_count: 22, sku: 'TMC-CCQ-50' }, { id: 'v4b', weight: '100g', price: 720.00, inventory_count: 10, sku: 'TMC-CCQ-100' }] },
+  { id: '5', name: 'Kashmiri Lal Mirch', slug: 'kashmiri-lal-mirch', origin: 'Pampore, Kashmir', status: 'published', variants: [{ id: 'v5a', weight: '100g', price: 320.00, inventory_count: 30, sku: 'TMC-KLM-100' }, { id: 'v5b', weight: '250g', price: 720.00, inventory_count: 15, sku: 'TMC-KLM-250' }] },
+  { id: '6', name: 'Tellicherry Black Peppercorns', slug: 'tellicherry-pepper', origin: 'Wayanad, Kerala', status: 'published', variants: [{ id: 'v6a', weight: '100g', price: 420.00, inventory_count: 20, sku: 'TMC-TBP-100' }, { id: 'v6b', weight: '250g', price: 920.00, inventory_count: 8, sku: 'TMC-TBP-250' }] },
+  { id: '7', name: 'Chai Masala Blend', slug: 'chai-masala', origin: 'Assam Highlands', status: 'published', variants: [{ id: 'v7a', weight: '100g', price: 290.00, inventory_count: 35, sku: 'TMC-CML-100' }, { id: 'v7b', weight: '250g', price: 650.00, inventory_count: 20, sku: 'TMC-CML-250' }] },
+  { id: '8', name: 'Kashmir Saffron', slug: 'kashmir-saffron', origin: 'Pampore, Kashmir', status: 'published', variants: [{ id: 'v8a', weight: '1g', price: 850.00, inventory_count: 15, sku: 'TMC-KSF-1G' }, { id: 'v8b', weight: '2g', price: 1600.00, inventory_count: 6, sku: 'TMC-KSF-2G' }] },
+  { id: '9', name: 'Cumin Seeds', slug: 'cumin-seeds', origin: 'Rajasthan, India', status: 'published', variants: [{ id: 'v9a', weight: '100g', price: 180.00, inventory_count: 60, sku: 'TMC-CUS-100' }, { id: 'v9b', weight: '250g', price: 400.00, inventory_count: 30, sku: 'TMC-CUS-250' }] },
+  { id: '10', name: 'Fennel Seeds', slug: 'fennel-seeds', origin: 'Gujarat, India', status: 'published', variants: [{ id: 'v10a', weight: '100g', price: 160.00, inventory_count: 50, sku: 'TMC-FNS-100' }, { id: 'v10b', weight: '250g', price: 360.00, inventory_count: 25, sku: 'TMC-FNS-250' }] },
+  { id: '11', name: 'Spice Starter Gift Box', slug: 'spice-starter-gift', origin: 'Pan India', status: 'published', variants: [{ id: 'v11a', weight: '6 × 50g', price: 1200.00, inventory_count: 20, sku: 'TMC-GFT-STR' }] },
+  { id: '12', name: "Chef's Collection Gift Set", slug: 'chefs-collection-gift', origin: 'Pan India', status: 'published', variants: [{ id: 'v12a', weight: '12 × 50g', price: 2200.00, inventory_count: 10, sku: 'TMC-GFT-CHF' }] },
 ]
 
 const Products = () => {

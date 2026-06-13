@@ -74,6 +74,14 @@ const NAV_GROUPS = [
 const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
   const { user, logout } = useAuth()
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'New order received', body: 'Order #TMC-001 placed by Priya Nair — ₹1,200.00', time: '2 min ago', read: false },
+    { id: 2, title: 'Low stock alert', body: 'Kashmir Saffron (2g) has only 6 units remaining', time: '1 hr ago', read: false },
+    { id: 3, title: 'New customer registered', body: 'Anjali Pillai joined the platform', time: '3 hr ago', read: true },
+  ])
+  const notifRef = useRef(null)
+  const unreadCount = notifications.filter(n => !n.read).length
 
   // Global hotkey for Command Palette (Cmd+K / Ctrl+K)
   useEffect(() => {
@@ -110,6 +118,9 @@ const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
     const handleOutsideClick = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setProfileDropdownOpen(false)
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setNotificationsOpen(false)
       }
     }
     document.addEventListener('mousedown', handleOutsideClick)
@@ -382,15 +393,59 @@ const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
             </div>
 
             {/* Notification bell */}
-            <button
-              className="relative p-2 rounded-md hover:bg-cream text-charcoal-muted hover:text-spice-brown transition-colors"
-              aria-label="Notifications"
-            >
-              <HiOutlineBell size={20} />
-              <span className="absolute top-1 right-1 bg-saffron text-cream text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
-                3
-              </span>
-            </button>
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => {
+                  setNotificationsOpen(!notificationsOpen)
+                  // Mark all as read when opened
+                  if (!notificationsOpen) {
+                    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+                  }
+                }}
+                className="relative p-2 rounded-md hover:bg-cream text-charcoal-muted hover:text-spice-brown transition-colors"
+                aria-label="Notifications"
+              >
+                <HiOutlineBell size={20} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-saffron text-cream text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notificationsOpen && (
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-cream-dark shadow-luxury rounded-lg overflow-hidden z-50 animate-fadeIn">
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-cream-dark">
+                    <span className="font-semibold text-xs text-charcoal uppercase tracking-wider">Notifications</span>
+                    <button
+                      onClick={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
+                      className="text-[10px] text-turmeric hover:text-spice-brown transition-colors uppercase tracking-wider"
+                    >Mark all read</button>
+                  </div>
+                  <div className="divide-y divide-cream-dark max-h-72 overflow-y-auto">
+                    {notifications.map(n => (
+                      <div key={n.id} className={`px-4 py-3 flex gap-3 ${n.read ? 'opacity-60' : 'bg-cream/30'}`}>
+                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${n.read ? 'bg-gray-300' : 'bg-turmeric'}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-charcoal-dark truncate">{n.title}</p>
+                          <p className="text-[11px] text-charcoal-muted mt-0.5 leading-snug">{n.body}</p>
+                          <p className="text-[10px] text-gray-400 mt-1">{n.time}</p>
+                        </div>
+                        <button
+                          onClick={() => setNotifications(prev => prev.filter(x => x.id !== n.id))}
+                          className="text-gray-300 hover:text-red-400 transition-colors shrink-0 mt-0.5"
+                        >
+                          <HiX size={13} />
+                        </button>
+                      </div>
+                    ))}
+                    {notifications.length === 0 && (
+                      <div className="px-4 py-8 text-center text-xs text-gray-400">No notifications</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Admin Profile Dropdown */}
             <div className="relative" ref={dropdownRef}>
