@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-hot-toast'
 import { HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi'
 
 const AdminLogin = () => {
-  const { login } = useAuth()
+  const { login, isAuthenticated, isLoading, user } = useAuth()
   const navigate = useNavigate()
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  // Already logged in as admin — send straight to dashboard
+  if (!isLoading && isAuthenticated && user?.role === 'admin') {
+    return <Navigate to="/admin" replace />
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -16,9 +16,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem('masala_access_token')
+    const token = localStorage.getItem('masala_access_token') || sessionStorage.getItem('masala_access_token')
       if (token) {
         if (token === 'mock-admin-token') {
+          // Validate the session token still exists in sessionStorage
+          // (sessionStorage clears on tab close, preventing persistent auto-login)
+          if (!sessionStorage.getItem('masala_access_token')) {
+            localStorage.removeItem('masala_access_token')
+            setState({ ...initialState, isLoading: false })
+            return
+          }
           setState({
             user: {
               id: 'admin-id-123',
@@ -72,6 +79,8 @@ export const AuthProvider = ({ children }) => {
         last_name: 'User',
         role: 'admin',
       }
+      // Use sessionStorage so token clears when tab closes (no persistent auto-login)
+      sessionStorage.setItem('masala_access_token', 'mock-admin-token')
       localStorage.setItem('masala_access_token', 'mock-admin-token')
       setState({ user: mockUser, isAuthenticated: true, isLoading: false, token: 'mock-admin-token' })
       return mockUser
@@ -104,6 +113,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       localStorage.removeItem('masala_access_token')
       localStorage.removeItem('masala_refresh_token')
+      sessionStorage.removeItem('masala_access_token')
       await supabase.auth.signOut()
       setState({ ...initialState, isLoading: false })
     }
