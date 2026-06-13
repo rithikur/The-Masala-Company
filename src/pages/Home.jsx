@@ -45,10 +45,10 @@ const SHOWCASE_SPICES = [
 ]
 
 const FEATURED_PRODUCTS = [
-  { id: 1, name: "Kashmir Saffron", origin: "Pampore, Kashmir", price: "₹850", image: "/images/hero_spices_bg.jpg", slug: "kashmir-saffron" },
-  { id: 2, name: "Ceylon Cinnamon", origin: "Sri Lanka", price: "₹420", image: "/images/floating_cinnamon.jpg", slug: "ceylon-cinnamon" },
-  { id: 3, name: "Green Cardamom", origin: "Kerala, India", price: "₹650", image: "/images/floating_cardamom.jpg", slug: "green-cardamom" },
-  { id: 4, name: "Turmeric Powder", origin: "Erode, Tamil Nadu", price: "₹210", image: "/images/hero_spices_bg.jpg", slug: "turmeric-powder" }
+  { id: 1, name: "Kashmir Saffron", origin: "Pampore, Kashmir", price: "₹850", weights: ["1g", "2g"], image: "/images/hero_spices_bg.jpg", slug: "kashmir-saffron" },
+  { id: 2, name: "Ceylon Cinnamon", origin: "Sri Lanka", price: "₹380", weights: ["50g", "100g"], image: "/images/floating_cinnamon.jpg", slug: "ceylon-cinnamon" },
+  { id: 3, name: "Green Cardamom", origin: "Kerala, India", price: "₹420", weights: ["50g", "100g"], image: "/images/floating_cardamom.jpg", slug: "green-cardamom" },
+  { id: 4, name: "Turmeric Powder", origin: "Erode, Tamil Nadu", price: "₹280", weights: ["100g", "250g"], image: "/images/product_turmeric.jpg", slug: "erode-turmeric" }
 ]
 
 const Home = () => {
@@ -169,9 +169,10 @@ const Home = () => {
         scrollTrigger: {
           trigger: horizontalWrapperRef.current,
           pin: true,
-          scrub: 1,
+          scrub: 0.5,
+          start: "top top",
           invalidateOnRefresh: true,
-          end: () => "+=" + (horizontalContainerRef.current.scrollWidth - window.innerWidth)
+          end: () => "+=" + (horizontalContainerRef.current.scrollWidth - window.innerWidth) * 0.85
         }
       })
     }
@@ -618,9 +619,18 @@ const Home = () => {
                   </button>
                 </div>
                 <div className="space-y-2">
+                  <p className="font-body text-[9px] tracking-[0.25em] uppercase text-spice-brown/50">{product.origin}</p>
                   <h3 className="font-display text-lg text-spice-brown uppercase tracking-wide group-hover:text-turmeric transition-colors">{product.name}</h3>
-                  <p className="font-accent italic text-charcoal-soft">{product.origin}</p>
-                  <p className="font-body text-spice-brown">{product.price}</p>
+                  {product.weights && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {product.weights.map((w, i) => (
+                        <span key={i} className="font-body text-[9px] tracking-wider uppercase border border-spice-brown/20 text-spice-brown/60 px-2 py-0.5">
+                          {w}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="font-body text-spice-brown">From {product.price}</p>
                 </div>
               </Link>
             ))}

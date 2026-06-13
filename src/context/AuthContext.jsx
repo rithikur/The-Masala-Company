@@ -61,18 +61,23 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const cleanEmail = email.trim().toLowerCase()
     const cleanPassword = password.trim()
-    
-    if (cleanEmail === 'admin@themasalacompany.com' && cleanPassword === 'themasalacompany') {
-      const response = await api.post('/api/auth/mock-admin-login', { email: cleanEmail, password: cleanPassword })
-      const { user, access_token, refresh_token } = response.data.data
-      
-      localStorage.setItem('masala_access_token', access_token)
-      if (refresh_token) localStorage.setItem('masala_refresh_token', refresh_token)
-      setState({ user, isAuthenticated: true, isLoading: false, token: access_token })
-      return user
+
+    // Fully offline admin bypass — no backend required
+    if (cleanEmail === 'admin@themasalacompany.com' && cleanPassword === 'admin123') {
+      const mockUser = {
+        id: 'admin-id-123',
+        email: 'admin@themasalacompany.com',
+        full_name: 'Admin User',
+        first_name: 'Admin',
+        last_name: 'User',
+        role: 'admin',
+      }
+      localStorage.setItem('masala_access_token', 'mock-admin-token')
+      setState({ user: mockUser, isAuthenticated: true, isLoading: false, token: 'mock-admin-token' })
+      return mockUser
     }
 
-    const response = await api.post('/api/auth/login', { email, password })
+    const response = await api.post('/api/auth/login', { email: cleanEmail, password: cleanPassword })
     const { user, access_token, refresh_token } = response.data.data
     localStorage.setItem('masala_access_token', access_token)
     if (refresh_token) localStorage.setItem('masala_refresh_token', refresh_token)
