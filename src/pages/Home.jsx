@@ -68,10 +68,10 @@ const Home = () => {
   const horizontalContainerRef = useRef(null)
 
   useEffect(() => {
-    // Short loading splash — just enough to show the brand name
+    // Brand intro splash
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 1200)
+    }, 2800)
     return () => clearTimeout(timer)
   }, [])
 
