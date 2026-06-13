@@ -9,84 +9,162 @@ import useCart from '../../hooks/useCart'
 import useWishlist from '../../hooks/useWishlist'
 import { HiOutlineArrowLeft, HiOutlineChevronDown, HiHeart, HiOutlineHeart } from 'react-icons/hi'
 
-// Premium mock data fallback if backend is unavailable
+// Premium mock data — covers every slug used in ProductList
 const MOCK_PRODUCTS = [
   {
-    id: '1',
-    name: 'Royal Garam Masala',
-    slug: 'royal-garam-masala',
+    id: '1', name: 'Royal Garam Masala', slug: 'royal-garam-masala',
     description: 'An aromatic heirloom spice blend crafted from 15 hand-roasted, single-origin ingredients. Deeply complex and intensely warm.',
     origin: 'Malabar Coast, Kerala',
     variants: [
       { id: 'v1-1', weight: '100g', price: 350.00, inventory_count: 25, sku: 'TMC-RGM-100' },
-      { id: 'v1-2', weight: '250g', price: 790.00, inventory_count: 12, sku: 'TMC-RGM-250' }
+      { id: 'v1-2', weight: '250g', price: 790.00, inventory_count: 12, sku: 'TMC-RGM-250' },
     ],
-    images: [
-      { url: '/images/product_garam_masala.jpg', alt_text: 'Royal Garam Masala Packaging', is_primary: true },
-      { url: '/images/product_turmeric.jpg', alt_text: 'Royal Garam Masala Whole Spices', is_primary: false }
-    ],
-    category_slug: 'signature-blends',
-    tasting_notes: 'Cinnamon warmth, black pepper sharpness, cardamom sweetness, and a complex floral depth of whole mace and nutmeg.',
+    images: [{ url: '/images/product_garam_masala.jpg', alt_text: 'Royal Garam Masala', is_primary: true }, { url: '/images/product_turmeric.jpg', alt_text: 'Garam Masala Spices', is_primary: false }],
+    tasting_notes: 'Cinnamon warmth, black pepper sharpness, cardamom sweetness, and a complex floral depth of mace and nutmeg.',
     ingredients: 'Cardamom, Cinnamon, Cloves, Mace, Nutmeg, Black Pepper, Coriander Seeds, Cumin, Star Anise, Fennel, Stone Flower.',
-    sourcing: 'Harvested by farmer cooperatives across the Western Ghats under fair-trade partnerships, ensuring direct farm-gate premium pricing.'
+    sourcing: 'Harvested by farmer cooperatives across the Western Ghats under fair-trade partnerships.',
   },
   {
-    id: '2',
-    name: 'Erode Single-Origin Turmeric',
-    slug: 'erode-turmeric',
+    id: '2', name: 'Erode Single-Origin Turmeric', slug: 'erode-turmeric',
     description: 'Vibrant, high-curcumin turmeric powder, ground from carefully cured rhizomes. Earthy, warm, and highly therapeutic.',
     origin: 'Erode, Tamil Nadu',
     variants: [
       { id: 'v2-1', weight: '100g', price: 280.00, inventory_count: 40, sku: 'TMC-ERT-100' },
-      { id: 'v2-2', weight: '250g', price: 620.00, inventory_count: 18, sku: 'TMC-ERT-250' }
+      { id: 'v2-2', weight: '250g', price: 620.00, inventory_count: 18, sku: 'TMC-ERT-250' },
     ],
-    images: [
-      { url: '/images/product_turmeric.jpg', alt_text: 'Erode Turmeric Jar', is_primary: true },
-      { url: '/images/product_garam_masala.jpg', alt_text: 'Erode Turmeric Powder Close Up', is_primary: false }
-    ],
-    category_slug: 'single-origin',
+    images: [{ url: '/images/product_turmeric.jpg', alt_text: 'Erode Turmeric Jar', is_primary: true }, { url: '/images/product_garam_masala.jpg', alt_text: 'Turmeric Powder', is_primary: false }],
     tasting_notes: 'Rich woody aroma, intense gingery earthiness, with a subtle bitter-sweet undertone and warm finish.',
     ingredients: '100% Pure Single-Origin Erode Turmeric Powder.',
-    sourcing: 'Sourced directly from a family-run heritage farm in Erode, dried naturally under the shade, and cold-milled to retain essential turmeric oils.'
+    sourcing: 'Sourced from a heritage farm in Erode, dried naturally under shade, and cold-milled to retain essential oils.',
   },
   {
-    id: '3',
-    name: 'Kashmiri Lal Mirch',
-    slug: 'kashmiri-lal-mirch',
-    description: 'Sun-dried Kashmiri chillies yielding a rich, brilliant crimson color and a delicate, mild heat with sweet undertones.',
+    id: '3', name: 'Green Cardamom Pods', slug: 'green-cardamom',
+    description: 'Hand-picked green cardamom pods from the misty Western Ghats. Intensely aromatic, sweet, and eucalyptus-like.',
+    origin: 'Kerala Highlands',
+    variants: [
+      { id: 'v3-1', weight: '50g', price: 420.00, inventory_count: 30, sku: 'TMC-GCP-50' },
+      { id: 'v3-2', weight: '100g', price: 790.00, inventory_count: 14, sku: 'TMC-GCP-100' },
+    ],
+    images: [{ url: '/images/floating_cardamom.jpg', alt_text: 'Green Cardamom Pods', is_primary: true }, { url: '/images/product_turmeric.jpg', alt_text: 'Cardamom Close Up', is_primary: false }],
+    tasting_notes: 'Intense sweet-floral aroma, eucalyptus coolness, with a warming spicy finish.',
+    ingredients: '100% Whole Green Cardamom Pods from Kerala.',
+    sourcing: 'Harvested before dawn from small family estates in the Western Ghats at peak aromatic maturity.',
+  },
+  {
+    id: '4', name: 'Ceylon Cinnamon Quills', slug: 'ceylon-cinnamon',
+    description: 'True Ceylon cinnamon — delicate, paper-thin quills with a complex sweet-floral warmth. The genuine article.',
+    origin: 'Sri Lanka',
+    variants: [
+      { id: 'v4-1', weight: '50g', price: 380.00, inventory_count: 22, sku: 'TMC-CCQ-50' },
+      { id: 'v4-2', weight: '100g', price: 720.00, inventory_count: 10, sku: 'TMC-CCQ-100' },
+    ],
+    images: [{ url: '/images/floating_cinnamon.jpg', alt_text: 'Ceylon Cinnamon Quills', is_primary: true }, { url: '/images/product_garam_masala.jpg', alt_text: 'Cinnamon Close Up', is_primary: false }],
+    tasting_notes: 'Delicately sweet, wood-floral, lightly citrus-edged with a cool finish — nothing like cassia.',
+    ingredients: '100% True Ceylon Cinnamon (Cinnamomum verum).',
+    sourcing: 'Hand-rolled by artisan peelers in Sri Lanka. Cured under tropical sun for 5 days to lock in volatile oils.',
+  },
+  {
+    id: '5', name: 'Kashmiri Lal Mirch', slug: 'kashmiri-lal-mirch',
+    description: 'Sun-dried Kashmiri chillies yielding a rich, brilliant crimson color with delicate, mild heat and sweet undertones.',
     origin: 'Pampore, Kashmir',
     variants: [
-      { id: 'v3-1', weight: '100g', price: 320.00, inventory_count: 30, sku: 'TMC-KLM-100' },
-      { id: 'v3-2', weight: '250g', price: 720.00, inventory_count: 15, sku: 'TMC-KLM-250' }
+      { id: 'v5-1', weight: '100g', price: 320.00, inventory_count: 30, sku: 'TMC-KLM-100' },
+      { id: 'v5-2', weight: '250g', price: 720.00, inventory_count: 15, sku: 'TMC-KLM-250' },
     ],
-    images: [
-      { url: '/images/product_garam_masala.jpg', alt_text: 'Kashmiri Lal Mirch Packaging', is_primary: true },
-      { url: '/images/product_turmeric.jpg', alt_text: 'Kashmiri Lal Mirch Whole Chillies', is_primary: false }
-    ],
-    category_slug: 'single-origin',
-    tasting_notes: 'Mildly pungent, fruity, sweet, smoky, offering a gorgeous natural red color with minimal heat.',
+    images: [{ url: '/images/product_garam_masala.jpg', alt_text: 'Kashmiri Lal Mirch', is_primary: true }, { url: '/images/product_turmeric.jpg', alt_text: 'Kashmiri Chilli', is_primary: false }],
+    tasting_notes: 'Mildly pungent, fruity, sweet, smoky — a gorgeous natural red color with minimal heat.',
     ingredients: '100% Sun-Dried Kashmiri Red Chilli Powder.',
-    sourcing: 'Cultivated in the rich saffron-rich soils of Pampore, Kashmir, harvested at peak ripeness, and stone-ground by hand.'
+    sourcing: 'Cultivated in the saffron-rich soils of Pampore, harvested at peak ripeness and stone-ground by hand.',
   },
   {
-    id: '4',
-    name: 'Tellicherry Black Peppercorns',
-    slug: 'tellicherry-pepper',
-    description: 'Vine-ripened, hand-picked large black peppercorns. Bold, complex aroma with citrus and pine notes and a clean, sharp bite.',
+    id: '6', name: 'Tellicherry Black Peppercorns', slug: 'tellicherry-pepper',
+    description: 'Vine-ripened, hand-picked large black peppercorns. Bold, complex aroma with citrus and pine notes.',
     origin: 'Wayanad, Kerala',
     variants: [
-      { id: 'v4-1', weight: '100g', price: 420.00, inventory_count: 20, sku: 'TMC-TBP-100' },
-      { id: 'v4-2', weight: '250g', price: 920.00, inventory_count: 8, sku: 'TMC-TBP-250' }
+      { id: 'v6-1', weight: '100g', price: 420.00, inventory_count: 20, sku: 'TMC-TBP-100' },
+      { id: 'v6-2', weight: '250g', price: 920.00, inventory_count: 8, sku: 'TMC-TBP-250' },
     ],
-    images: [
-      { url: '/images/product_turmeric.jpg', alt_text: 'Tellicherry Black Peppercorns Jar', is_primary: true },
-      { url: '/images/product_garam_masala.jpg', alt_text: 'Tellicherry Pepper Close Up', is_primary: false }
-    ],
-    category_slug: 'single-origin',
-    tasting_notes: 'Pungent heat, deep pine, woody undertones, citrus top notes, long and lingering finish.',
+    images: [{ url: '/images/product_turmeric.jpg', alt_text: 'Tellicherry Peppercorns', is_primary: true }, { url: '/images/product_garam_masala.jpg', alt_text: 'Pepper Close Up', is_primary: false }],
+    tasting_notes: 'Pungent heat, deep pine, woody undertones, citrus top notes, long lingering finish.',
     ingredients: '100% Whole Tellicherry Black Peppercorns.',
-    sourcing: 'Harvested from high-altitude estates in Wayanad, Kerala, select-graded for size (extra-large TGSEB grade).'
-  }
+    sourcing: 'Harvested from high-altitude estates in Wayanad, select-graded TGSEB extra-large.',
+  },
+  {
+    id: '7', name: 'Chai Masala Blend', slug: 'chai-masala',
+    description: 'A perfectly balanced chai masala crafted for milk teas — warming ginger, aromatic cardamom, and honeyed cinnamon.',
+    origin: 'Assam Highlands',
+    variants: [
+      { id: 'v7-1', weight: '100g', price: 290.00, inventory_count: 35, sku: 'TMC-CML-100' },
+      { id: 'v7-2', weight: '250g', price: 650.00, inventory_count: 20, sku: 'TMC-CML-250' },
+    ],
+    images: [{ url: '/images/product_garam_masala.jpg', alt_text: 'Chai Masala Blend', is_primary: true }, { url: '/images/floating_cardamom.jpg', alt_text: 'Chai Spices', is_primary: false }],
+    tasting_notes: 'Warming ginger heat, floral cardamom, sweet cinnamon, a touch of clove and black pepper.',
+    ingredients: 'Ginger, Cardamom, Cinnamon, Cloves, Black Pepper, Nutmeg, Fennel.',
+    sourcing: 'Each ingredient is sourced from its ideal terroir — ginger from Assam, cardamom from Kerala, cinnamon from Sri Lanka.',
+  },
+  {
+    id: '8', name: 'Kashmir Saffron', slug: 'kashmir-saffron',
+    description: 'Genuine Kashmiri Mongra saffron — the world\'s finest grade. Deep crimson threads with an intensely floral, honey-like aroma.',
+    origin: 'Pampore, Kashmir',
+    variants: [
+      { id: 'v8-1', weight: '1g', price: 850.00, inventory_count: 15, sku: 'TMC-KSF-1G' },
+      { id: 'v8-2', weight: '2g', price: 1600.00, inventory_count: 6, sku: 'TMC-KSF-2G' },
+    ],
+    images: [{ url: '/images/hero_spices_bg.jpg', alt_text: 'Kashmir Saffron', is_primary: true }, { url: '/images/product_turmeric.jpg', alt_text: 'Saffron Threads', is_primary: false }],
+    tasting_notes: 'Intensely floral, honeyed, with subtle metallic richness and a long warm finish.',
+    ingredients: '100% Pure Kashmiri Mongra Saffron Stigmas.',
+    sourcing: 'Hand-harvested at dawn during the 3-week flowering season in the saffron fields of Pampore, Kashmir.',
+  },
+  {
+    id: '9', name: 'Cumin Seeds', slug: 'cumin-seeds',
+    description: 'Warm, nutty, earthy cumin seeds — the backbone of Indian cooking. Toasted and aromatic, perfect for tempering.',
+    origin: 'Rajasthan, India',
+    variants: [
+      { id: 'v9-1', weight: '100g', price: 180.00, inventory_count: 60, sku: 'TMC-CUS-100' },
+      { id: 'v9-2', weight: '250g', price: 400.00, inventory_count: 30, sku: 'TMC-CUS-250' },
+    ],
+    images: [{ url: '/images/floating_cardamom.jpg', alt_text: 'Cumin Seeds', is_primary: true }, { url: '/images/product_turmeric.jpg', alt_text: 'Cumin Close Up', is_primary: false }],
+    tasting_notes: 'Nutty, warm, slightly bitter with a long earthy finish. Releases intense aroma when toasted.',
+    ingredients: '100% Whole Cumin Seeds (Cuminum cyminum).',
+    sourcing: 'Grown in the arid soils of Rajasthan where low humidity produces dense, oil-rich seeds.',
+  },
+  {
+    id: '10', name: 'Fennel Seeds', slug: 'fennel-seeds',
+    description: 'Sweet, anise-like fennel seeds with a cool, refreshing finish. Versatile in cooking and beloved as a mouth freshener.',
+    origin: 'Gujarat, India',
+    variants: [
+      { id: 'v10-1', weight: '100g', price: 160.00, inventory_count: 50, sku: 'TMC-FNS-100' },
+      { id: 'v10-2', weight: '250g', price: 360.00, inventory_count: 25, sku: 'TMC-FNS-250' },
+    ],
+    images: [{ url: '/images/floating_cinnamon.jpg', alt_text: 'Fennel Seeds', is_primary: true }, { url: '/images/product_garam_masala.jpg', alt_text: 'Fennel Close Up', is_primary: false }],
+    tasting_notes: 'Sweet, licorice-like, cooling, with a mild anise character and pleasant lingering sweetness.',
+    ingredients: '100% Whole Fennel Seeds (Foeniculum vulgare).',
+    sourcing: 'Cultivated in the rich black cotton soils of Gujarat and sun-dried to concentrate their natural essential oils.',
+  },
+  {
+    id: '11', name: 'Spice Starter Gift Box', slug: 'spice-starter-gift',
+    description: 'A beautifully curated set of 6 essential spices — the perfect introduction to The Masala Company\'s single-origin collection.',
+    origin: 'Pan India',
+    variants: [
+      { id: 'v11-1', weight: '6 × 50g', price: 1200.00, inventory_count: 20, sku: 'TMC-GFT-STR' },
+    ],
+    images: [{ url: '/images/product_garam_masala.jpg', alt_text: 'Spice Starter Gift Box', is_primary: true }, { url: '/images/floating_cardamom.jpg', alt_text: 'Gift Box Contents', is_primary: false }],
+    tasting_notes: 'A curated journey through the flavors of India — from earthy turmeric to floral cardamom.',
+    ingredients: 'Turmeric 50g, Garam Masala 50g, Cardamom 50g, Cinnamon 50g, Cumin 50g, Black Pepper 50g.',
+    sourcing: 'Each spice in this set is sourced from its ideal single-origin farm across India and Sri Lanka.',
+  },
+  {
+    id: '12', name: "Chef's Collection Gift Set", slug: 'chefs-collection-gift',
+    description: 'The ultimate spice gift for the discerning cook — 12 premium single-origin spices in an artisan wooden box.',
+    origin: 'Pan India',
+    variants: [
+      { id: 'v12-1', weight: '12 × 50g', price: 2200.00, inventory_count: 10, sku: 'TMC-GFT-CHF' },
+    ],
+    images: [{ url: '/images/hero_spices_bg.jpg', alt_text: "Chef's Collection Gift Set", is_primary: true }, { url: '/images/product_turmeric.jpg', alt_text: 'Gift Set Contents', is_primary: false }],
+    tasting_notes: 'A complete aromatic library — from the depths of saffron to the brightness of cardamom.',
+    ingredients: '12 premium single-origin spices including Kashmir Saffron, Tellicherry Pepper, and Ceylon Cinnamon.',
+    sourcing: 'Hand-curated by our master blenders. Each spice is sourced directly from origin farms and packed in recyclable kraft packaging.',
+  },
 ]
 
 const ProductDetail = () => {

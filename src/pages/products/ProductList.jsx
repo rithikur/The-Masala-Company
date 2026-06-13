@@ -335,6 +335,16 @@ const ProductList = () => {
                         <h3 className="font-display text-xl sm:text-2xl text-spice-brown mb-1 group-hover:text-turmeric transition-colors duration-300 leading-tight">
                           {product.name}
                         </h3>
+                        {/* Weight variants */}
+                        {product.variants?.length > 0 && (
+                          <div className="flex flex-wrap justify-center gap-1.5 mb-2">
+                            {product.variants.map((v, i) => (
+                              <span key={i} className="font-body text-[9px] tracking-wider uppercase border border-spice-brown/20 text-spice-brown/60 px-2 py-0.5">
+                                {v.weight}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         <span className="font-accent italic text-sm text-charcoal-muted">
                           {startingPrice > 0 ? `From ₹${startingPrice.toFixed(2)}` : 'Price on request'}
                         </span>
