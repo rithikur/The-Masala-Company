@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
-import registerBg from '../../assets/images/register_bg.png'
+import { HiArrowLeft } from 'react-icons/hi'
+import registerBg from '../../assets/images/register_bg.jpg'
 
 const Register = () => {
   const [firstName, setFirstName] = useState('')
@@ -55,12 +56,15 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-cream">
-      {/* Left side - Stark, high-end editorial splash */}
-      <div className="hidden md:flex flex-1 relative items-center justify-center p-12 bg-charcoal">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40" 
-          style={{ backgroundImage: `url(${registerBg})` }}
-        ></div>
+      {/* Left side */}
+      <div className="hidden md:flex flex-1 relative items-center justify-center p-12 bg-charcoal overflow-hidden">
+        <img
+          src={registerBg}
+          alt="Spices background"
+          fetchpriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
         <div className="relative z-10 text-cream max-w-lg text-center md:text-left">
           <span className="text-xs uppercase tracking-widest text-turmeric font-semibold mb-3 block">Est. 2026</span>
           <h1 className="font-display text-5xl font-light mb-6 tracking-wide leading-tight text-cream">Pure, Aromatic, Authentic.</h1>
@@ -70,8 +74,17 @@ const Register = () => {
         </div>
       </div>
 
-      {/* Right side - Stark, cardless form with generous whitespace */}
-      <div className="flex-1 flex items-center justify-center p-8 sm:p-16 bg-cream">
+      {/* Right side - form */}
+      <div className="flex-1 flex items-center justify-center p-8 sm:p-16 bg-cream relative">
+        {/* Back to home button */}
+        <Link
+          to="/"
+          className="absolute top-6 left-6 flex items-center gap-2 text-xs font-body uppercase tracking-widest text-spice-brown/60 hover:text-spice-brown transition-colors"
+        >
+          <HiArrowLeft size={16} />
+          <span className="hidden sm:inline">Back to Home</span>
+        </Link>
+
         <div className="w-full max-w-md bg-transparent">
           <div className="mb-10 text-left">
             <span className="text-xs uppercase tracking-widest text-turmeric font-medium block mb-1">Registration</span>

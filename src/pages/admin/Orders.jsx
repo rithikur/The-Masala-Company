@@ -17,7 +17,7 @@ const Orders = () => {
       const res = await api.get('/api/admin/orders')
       setOrders(res.data.data || [])
     } catch (err) {
-      toast.error("Failed to load orders from server.")
+      // Backend unavailable — show empty state silently (no error toast)
       setOrders([])
     } finally {
       setLoading(false)
