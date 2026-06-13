@@ -68,9 +68,10 @@ const Home = () => {
   const horizontalContainerRef = useRef(null)
 
   useEffect(() => {
+    // Short loading splash — just enough to show the brand name
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 2800)
+    }, 1200)
     return () => clearTimeout(timer)
   }, [])
 
@@ -221,67 +222,93 @@ const Home = () => {
           <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12 pt-24 pb-8 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
 
             {/* ---------------- MOBILE HERO (< 1024px) ---------------- */}
-            <div className="w-full lg:hidden flex flex-col items-center text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1 }}
-              >
-                <h1 className="font-display text-3xl sm:text-4xl font-bold text-spice-brown uppercase leading-[0.85] tracking-tight mb-4 flex flex-col">
-                  <span>The</span>
-                  <span>Masala</span>
-                  <span>Company</span>
-                </h1>
-                <p className="font-accent italic text-base text-spice-brown/80 mb-6 px-4">
-                  India's finest single-origin spices.
-                </p>
-              </motion.div>
+            <div className="w-full lg:hidden flex flex-col items-center">
 
-              {/* Sleek Mobile Card */}
+              {/* Full-bleed editorial card */}
               <motion.div
-                className="w-full max-w-sm aspect-[4/5] relative rounded-2xl overflow-hidden shadow-luxury border border-spice-brown/10 mb-8 bg-cream-dark"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, delay: 0.2 }}
+                className="w-full relative overflow-hidden bg-cream-dark mb-6"
+                style={{ height: '70dvh', maxHeight: '520px' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
               >
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={activeSpice}
                     src={SHOWCASE_SPICES[activeSpice].image}
                     alt={SHOWCASE_SPICES[activeSpice].name}
-                    initial={{ opacity: 0, scale: 1.1 }}
+                    initial={{ opacity: 0, scale: 1.06 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.1 }}
-                    transition={{ duration: 0.6 }}
-                    className="absolute inset-0 w-full h-full object-contain p-8 mix-blend-multiply"
-                    loading="lazy"
+                    exit={{ opacity: 0, scale: 1.06 }}
+                    transition={{ duration: 0.7 }}
+                    className="absolute inset-0 w-full h-full object-contain p-10 mix-blend-multiply"
+                    loading="eager"
                     decoding="async"
                   />
                 </AnimatePresence>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-spice-brown via-spice-brown/40 to-transparent pointer-events-none" />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-spice-brown/90 via-spice-brown/20 to-transparent pointer-events-none" />
 
-                <div className="absolute bottom-0 left-0 w-full p-6 text-left z-10">
-                  <p className="font-body text-[10px] tracking-[0.3em] uppercase text-turmeric mb-1">{SHOWCASE_SPICES[activeSpice].origin}</p>
-                  <h2 className="font-display text-3xl text-cream mb-2">{SHOWCASE_SPICES[activeSpice].name}</h2>
-                  <p className="font-body text-xs text-cream/80 line-clamp-2">{SHOWCASE_SPICES[activeSpice].chapterDesc}</p>
+                {/* Brand title top-left */}
+                <div className="absolute top-5 left-5 right-5 flex justify-between items-start z-10">
+                  <div>
+                    <p className="font-body text-[9px] tracking-[0.35em] uppercase text-cream/60 mb-0.5">Est. 2024</p>
+                    <h1 className="font-display text-lg font-bold text-cream uppercase leading-tight tracking-widest">
+                      The Masala<br />Company
+                    </h1>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-turmeric">
+                      {SHOWCASE_SPICES[activeSpice].origin}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Spice name bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeSpice}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <p className="font-body text-[9px] tracking-[0.3em] uppercase text-turmeric mb-1">
+                        {SHOWCASE_SPICES[activeSpice].chapter}
+                      </p>
+                      <h2 className="font-display text-2xl text-cream mb-1">
+                        {SHOWCASE_SPICES[activeSpice].name}
+                      </h2>
+                      <p className="font-body text-xs text-cream/70 line-clamp-1">
+                        {SHOWCASE_SPICES[activeSpice].chapterDesc}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </motion.div>
 
-              {/* Mobile controls/dots */}
-              <div className="flex gap-2 mb-8">
-                {SHOWCASE_SPICES.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveSpice(idx)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${activeSpice === idx ? 'w-8 bg-spice-brown' : 'w-2 bg-spice-brown/20'}`}
-                  />
-                ))}
+              {/* Tagline + dots + CTA row */}
+              <div className="w-full flex items-center justify-between px-1 mb-5">
+                <p className="font-accent italic text-sm text-spice-brown/70">
+                  India's finest single-origin spices.
+                </p>
+                {/* Dot nav */}
+                <div className="flex gap-1.5">
+                  {SHOWCASE_SPICES.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveSpice(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${activeSpice === idx ? 'w-6 bg-spice-brown' : 'w-1.5 bg-spice-brown/25'}`}
+                    />
+                  ))}
+                </div>
               </div>
 
               <Link
                 to="/collections"
-                className="w-full max-w-sm px-8 py-4 bg-spice-brown text-cream font-body text-xs uppercase tracking-widest hover:bg-turmeric transition-colors"
+                className="w-full py-4 bg-spice-brown text-cream font-body text-xs uppercase tracking-widest text-center hover:bg-turmeric transition-colors duration-300"
               >
                 Explore Collection
               </Link>
@@ -445,42 +472,28 @@ const Home = () => {
           <div className="relative z-10 w-full border-t border-spice-brown/5 bg-cream/60 backdrop-blur-md">
             <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-6">
 
-              {/* Counters */}
+              {/* Counters — always visible, no gate needed */}
               <div ref={counterRef} className="flex flex-wrap justify-center md:justify-start gap-6 sm:gap-12">
                 {[
-                  { label: "Farmers", target: 150, suffix: "+" },
-                  { label: "Varieties", target: 20, suffix: "+" },
-                  { label: "Traceable", target: 100, suffix: "%" },
-                  { label: "Customers", target: 5000, suffix: "+" }
+                  { label: "Farmers", target: "150+" },
+                  { label: "Varieties", target: "20+" },
+                  { label: "Traceable", target: "100%" },
+                  { label: "Customers", target: "5000+" }
                 ].map((stat, idx) => (
                   <div key={idx} className="flex flex-col items-center md:items-start">
                     <span className="font-number text-3xl sm:text-4xl font-bold tracking-tight text-spice-brown">
-                      {isCounterInView ? (
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 1, delay: 0.2 * idx }}
-                        >
-                          {stat.target}
-                        </motion.span>
-                      ) : "0"}
-                      {stat.suffix}
+                      {stat.target}
                     </span>
                     <span className="font-body text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-charcoal-muted mt-1">{stat.label}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Scroll Indicator */}
-              <div className="flex items-center gap-4 text-spice-brown/60">
-                <span className="font-body text-[9px] tracking-[0.2em] uppercase hidden sm:block">Discover the Story</span>
-                <span className="font-body text-[9px] tracking-[0.2em] uppercase block sm:hidden">Scroll</span>
+              {/* Scroll Indicator — CSS only for performance */}
+              <div className="hidden sm:flex items-center gap-4 text-spice-brown/60">
+                <span className="font-body text-[9px] tracking-[0.2em] uppercase">Discover the Story</span>
                 <div className="h-10 w-px bg-spice-brown/20 relative overflow-hidden">
-                  <motion.div
-                    className="absolute top-0 left-0 w-full h-1/2 bg-turmeric"
-                    animate={{ y: [0, 40] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                  />
+                  <div className="absolute top-0 left-0 w-full h-1/2 bg-turmeric animate-[scrollDown_1.5s_linear_infinite]" />
                 </div>
               </div>
             </div>

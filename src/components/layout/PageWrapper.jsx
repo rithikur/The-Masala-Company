@@ -13,6 +13,16 @@ const PageWrapper = ({ children, hideFooter = false, transparentNav = false, dar
   const { pathname } = useLocation()
 
   useEffect(() => {
+    // Only enable smooth scroll on capable desktop devices
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches
+    const lowSpec = navigator.hardwareConcurrency <= 4
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (isMobile || lowSpec || prefersReduced) {
+      // Native scroll for mobile/low-spec — no overhead
+      return
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

@@ -7,20 +7,31 @@ import { getCategories } from '../services/categories'
 import { getProducts } from '../services/products'
 import useWishlist from '../hooks/useWishlist'
 
+const MOCK_CATEGORIES = [
+  { id: 'c1', name: 'Whole Spices', slug: 'whole-spices', description: 'Pure, hand-picked whole spices from origin farms.', image_url: '/images/floating_cardamom.jpg', span: 'col-span-1 sm:col-span-2 md:col-span-2 md:row-span-2' },
+  { id: 'c2', name: 'Ground Spices', slug: 'ground-spices', description: 'Stone-cold-milled for maximum freshness and aroma.', image_url: '/images/product_turmeric.jpg', span: 'col-span-1' },
+  { id: 'c3', name: 'Spice Blends', slug: 'spice-blends', description: 'Handcrafted masala blends rooted in culinary tradition.', image_url: '/images/product_garam_masala.jpg', span: 'col-span-1' },
+  { id: 'c4', name: 'Seeds & Pods', slug: 'seeds-pods', description: 'Aromatic seeds and pods for tempering and finishing.', image_url: '/images/floating_cinnamon.jpg', span: 'col-span-1' },
+  { id: 'c5', name: 'Exotic & Rare', slug: 'exotic-rare', description: 'Rare single-origin finds — saffron, mace, and beyond.', image_url: '/images/hero_spices_bg.jpg', span: 'col-span-1' },
+  { id: 'c6', name: 'Gift Sets', slug: 'gift-sets', description: 'Curated gift boxes for the discerning spice lover.', image_url: '/images/product_turmeric.jpg', span: 'col-span-1 sm:col-span-2 md:col-span-2' },
+]
+
 const Collections = () => {
   const [categories, setCategories] = useState([])
   const [featuredProducts, setFeaturedProducts] = useState([])
   const { toggleWishlist, isWishlisted } = useWishlist()
 
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const cats = await getCategories()
-        // Map spans dynamically for the bento grid
+        if (!cats || cats.length === 0) throw new Error('empty')
         const mappedCats = cats.map((c, i) => {
-          let span = 'col-span-1 md:col-span-1 row-span-1'
-          if (i === 0) span = 'col-span-1 md:col-span-2 row-span-2'
-          else if (i === 5) span = 'col-span-1 md:col-span-2 row-span-1'
+          let span = 'col-span-1'
+          if (i === 0) span = 'col-span-1 sm:col-span-2 md:col-span-2 md:row-span-2'
+          else if (i === 5) span = 'col-span-1 sm:col-span-2 md:col-span-2'
           return { ...c, span }
         })
         setCategories(mappedCats)
@@ -28,7 +39,10 @@ const Collections = () => {
         const result = await getProducts({ page: 1, per_page: 8, sort: 'newest' })
         setFeaturedProducts(result.data || [])
       } catch (err) {
-        console.error('Failed to load collections page data', err)
+        // API unavailable — show rich mock data so page is never empty
+        setCategories(MOCK_CATEGORIES)
+      } finally {
+        setLoading(false)
       }
     }
     loadData()
@@ -47,7 +61,24 @@ const Collections = () => {
             </p>
           </div>
 
-          {/* BENTO GRID UI */}
+          {/* BENTO GRID */}
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[220px] gap-4 mb-20">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className={`bg-cream-dark animate-pulse rounded-sm ${
+                  i === 0 ? 'col-span-1 sm:col-span-2 md:col-span-2 md:row-span-2' :
+                  i === 5 ? 'col-span-1 sm:col-span-2 md:col-span-2' : 'col-span-1'
+                }`} />
+              ))}
+            </div>
+          ) : categories.length === 0 ? (
+            <div className="py-24 text-center border border-dashed border-spice-brown/20 mb-20">
+              <p className="font-accent italic text-charcoal-muted text-lg">Collections coming soon.</p>
+              <Link to="/products" className="mt-6 inline-block font-body text-xs uppercase tracking-widest text-spice-brown border-b border-spice-brown hover:text-turmeric pb-1 transition-colors">
+                Browse All Products
+              </Link>
+            </div>
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[220px] gap-4 mb-20">
             {categories.map((collection, idx) => (
               <motion.div 
@@ -56,15 +87,14 @@ const Collections = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className={`group relative overflow-hidden bg-cream-dark flex flex-col ${
-                  // On mobile ignore spans — everything is 1 col
-                  window.innerWidth >= 768 ? collection.span : ''
-                }`}
+                className={`group relative overflow-hidden bg-cream-dark flex flex-col ${collection.span}`}
               >
                 <div className="absolute inset-0 z-0">
                   <img 
                     src={collection.image_url || '/images/hero_spices_bg.jpg'} 
                     alt={collection.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover mix-blend-multiply opacity-80 transition-transform duration-1000 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500"></div>
@@ -85,6 +115,7 @@ const Collections = () => {
               </motion.div>
             ))}
           </div>
+          )}
 
           {/* ADDED PRODUCTS SECTION */}
           <div className="mt-32 pt-16 border-t border-spice-brown/10">
