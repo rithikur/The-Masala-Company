@@ -3,7 +3,7 @@ import axios from 'axios'
 const api = axios.create({
   // No baseURL — uses Vite proxy: /api → http://127.0.0.1:5000
   headers: { 'Content-Type': 'application/json' },
-  timeout: 10000,
+  timeout: 2000, // 2s — fast fail so offline fallbacks kick in immediately
 })
 
 // Request interceptor: attach JWT token from localStorage if present

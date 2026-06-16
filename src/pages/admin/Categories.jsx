@@ -57,31 +57,31 @@ const Categories = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
+
+    // Optimistic update — apply to UI immediately, no waiting for backend
+    if (editingCategory) {
+      setCategories(prev => prev.map(c =>
+        c.id === editingCategory.id ? { ...c, ...formData } : c
+      ))
+      toast.success('Category updated')
+    } else {
+      const newCat = { id: `c${Date.now()}`, ...formData, product_count: 0 }
+      setCategories(prev => [...prev, newCat])
+      toast.success('Category added')
+    }
+
+    handleCloseModal()
+    setSubmitting(false)
+
+    // Try backend silently in background (no UI impact if it fails)
     try {
       if (editingCategory) {
         await api.put(`/api/admin/categories/${editingCategory.id}`, formData)
-        toast.success('Category updated successfully')
-        setCategories(prev => prev.map(c => c.id === editingCategory.id ? { ...c, ...formData } : c))
       } else {
         await api.post('/api/admin/categories', formData)
-        toast.success('Category created successfully')
-        const newCat = { id: `c${Date.now()}`, ...formData, product_count: 0 }
-        setCategories(prev => [...prev, newCat])
       }
-      handleCloseModal()
-    } catch (err) {
-      // Offline fallback — apply change locally
-      if (editingCategory) {
-        setCategories(prev => prev.map(c => c.id === editingCategory.id ? { ...c, ...formData } : c))
-        toast.success('Category updated (offline mode)')
-      } else {
-        const newCat = { id: `c${Date.now()}`, ...formData, product_count: 0 }
-        setCategories(prev => [...prev, newCat])
-        toast.success('Category created (offline mode)')
-      }
-      handleCloseModal()
-    } finally {
-      setSubmitting(false)
+    } catch (_) {
+      // Backend offline — local state already updated, nothing to do
     }
   }
 
