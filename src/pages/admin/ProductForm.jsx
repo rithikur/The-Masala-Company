@@ -201,7 +201,7 @@ const ProductForm = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="pb-20 relative">
         
         {/* STICKY HEADER */}
-        <div className="sticky top-18 bg-gray-50/90 backdrop-blur-xs z-30 border-b border-gray-200 py-4 mb-8 flex justify-between items-center -mx-8 px-8">
+        <div className="sticky top-16 bg-white/95 backdrop-blur-sm z-30 border-b border-gray-200 py-4 mb-8 flex justify-between items-center -mx-8 px-8 shadow-sm">
           <div>
             <h1 className="font-serif text-lg text-charcoal-dark font-semibold">
               {isEdit ? "Modify Spice Blend" : "New Spice Blend"}
