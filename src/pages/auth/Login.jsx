@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { HiOutlineEye, HiOutlineEyeOff, HiArrowLeft } from 'react-icons/hi'
 import loginBg from '../../assets/images/login_bg.jpg'
+import { sendWelcomeEmail } from '../../services/emailService'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -20,7 +21,13 @@ const Login = () => {
     setLoading(true)
     try {
       const loggedInUser = await login(email, password)
-      toast.success('Welcome back!')
+      toast.success(`Welcome back, ${loggedInUser.first_name || 'there'}!`)
+      // Send welcome-back email (non-blocking)
+      sendWelcomeEmail({
+        name: loggedInUser.first_name || loggedInUser.full_name || 'Valued Customer',
+        email: loggedInUser.email,
+        isNewUser: false,
+      })
       if (loggedInUser && loggedInUser.role === 'admin') {
         navigate('/admin')
       } else {
@@ -29,7 +36,7 @@ const Login = () => {
         navigate(redirect)
       }
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to login')
+      toast.error(error.message || error.response?.data?.error || 'Invalid email or password')
     } finally {
       setLoading(false)
     }

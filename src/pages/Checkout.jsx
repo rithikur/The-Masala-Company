@@ -6,6 +6,7 @@ import useCart from '../hooks/useCart'
 import useAuth from '../hooks/useAuth'
 import api from '../services/api'
 import { toast } from 'react-hot-toast'
+import { sendOrderConfirmationEmail } from '../services/emailService'
 import {
   HiOutlineArrowLeft, HiOutlineCheckCircle,
   HiOutlineCash, HiOutlineCreditCard, HiShieldCheck
@@ -149,6 +150,21 @@ const Checkout = () => {
       setOrderSuccess(true)
       clearCart()
       toast.success('Order placed successfully! 🎉')
+
+      // Send order confirmation email (non-blocking)
+      const customerEmail = formData.email || user?.email
+      if (customerEmail) {
+        sendOrderConfirmationEmail({
+          name: formData.firstName || user?.first_name || 'Valued Customer',
+          email: customerEmail,
+          orderId: localOrder.id,
+          total: subtotal,
+          paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Card',
+          address: shippingAddress,
+          items: orderItems,
+        })
+      }
+
     } catch (err) {
       toast.error('Something went wrong. Please try again.')
     } finally {

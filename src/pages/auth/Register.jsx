@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
 import { HiArrowLeft } from 'react-icons/hi'
 import registerBg from '../../assets/images/register_bg.jpg'
+import { sendWelcomeEmail } from '../../services/emailService'
 
 const Register = () => {
   const [firstName, setFirstName] = useState('')
@@ -42,11 +43,17 @@ const Register = () => {
     
     setLoading(true)
     try {
-      await register(email, password, firstName, lastName)
-      toast.success('Welcome to The Masala Company!')
+      const newUser = await register(email, password, firstName, lastName)
+      toast.success(`Welcome to The Masala Company, ${firstName}! 🎉`)
+      // Send welcome email (non-blocking)
+      sendWelcomeEmail({
+        name: firstName,
+        email,
+        isNewUser: true,
+      })
       navigate('/')
     } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to register')
+      toast.error(error.message || error.response?.data?.error || 'Registration failed. Please try again.')
     } finally {
       setLoading(false)
     }
