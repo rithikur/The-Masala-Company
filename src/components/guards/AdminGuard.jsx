@@ -14,12 +14,8 @@ const AdminGuard = ({ children }) => {
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || user?.role !== 'admin') {
     return <Navigate to="/admin/login" replace />
-  }
-
-  if (user?.role !== 'admin') {
-    return <Navigate to="/" replace />
   }
 
   return children
