@@ -9,7 +9,16 @@ import { uploadImage } from '../../services/storage'
 import { toast } from 'react-hot-toast'
 import { HiOutlinePlusCircle, HiOutlineTrash } from 'react-icons/hi'
 
-const WEIGHT_OPTIONS = ['50g', '100g', '250g', '500g', '1kg']
+const WEIGHT_PRESETS = ['50g', '100g', '250g', '500g', '1kg']
+
+const MOCK_CATEGORIES = [
+  { id: 'c1', name: 'Whole Spices', slug: 'whole-spices' },
+  { id: 'c2', name: 'Ground Spices', slug: 'ground-spices' },
+  { id: 'c3', name: 'Spice Blends', slug: 'spice-blends' },
+  { id: 'c4', name: 'Seeds & Pods', slug: 'seeds-pods' },
+  { id: 'c5', name: 'Exotic & Rare', slug: 'exotic-rare' },
+  { id: 'c6', name: 'Gift Sets', slug: 'gift-sets' },
+]
 
 const ProductForm = () => {
   const { id } = useParams()
@@ -20,12 +29,16 @@ const ProductForm = () => {
   const [description, setDescription] = useState('')
   const [uploadedImages, setUploadedImages] = useState([])
   const [uploading, setUploading] = useState(false)
+  const [categories, setCategories] = useState(MOCK_CATEGORIES)
+  // Custom weight input state per variant: { [fieldId]: boolean }
+  const [customWeightMode, setCustomWeightMode] = useState({})
 
   const { register, control, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
     defaultValues: {
       name: '',
       slug: '',
       origin: '',
+      category_id: '',
       status: 'draft',
       variants: [{ weight: '100g', price: 0, inventory_count: 10, sku: '' }]
     }
@@ -47,6 +60,14 @@ const ProductForm = () => {
       setValue('slug', generatedSlug)
     }
   }, [productName, setValue, isEdit])
+
+  // Load categories from API or fallback to mock
+  useEffect(() => {
+    api.get('/api/categories').then(res => {
+      const data = res.data.data || []
+      if (data.length > 0) setCategories(data)
+    }).catch(() => { /* keep mock */ })
+  }, [])
 
   // Load existing product info
   useEffect(() => {
@@ -281,17 +302,50 @@ const ProductForm = () => {
                     key={field.id}
                     className="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end bg-gray-50/50 p-4 border border-gray-100 rounded-none relative"
                   >
-                    {/* Weight options */}
+                    {/* Weight: preset chips + custom input */}
                     <div className="flex flex-col gap-1">
                       <label className="font-sans text-[10px] uppercase text-gray-500">Weight</label>
-                      <select
-                        {...register(`variants.${idx}.weight`)}
-                        className="border border-gray-200 p-2 text-sm bg-white outline-none focus:border-spice-brown rounded-none"
-                      >
-                        {WEIGHT_OPTIONS.map(opt => (
-                          <option key={opt} value={opt}>{opt}</option>
-                        ))}
-                      </select>
+                      {customWeightMode[field.id] ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="text"
+                            placeholder="e.g. 75g, 2kg"
+                            {...register(`variants.${idx}.weight`)}
+                            className="flex-1 border border-spice-brown p-2 text-sm outline-none focus:border-spice-brown rounded-none"
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setCustomWeightMode(prev => ({ ...prev, [field.id]: false }))}
+                            className="px-2 text-xs text-gray-400 hover:text-gray-600 border border-gray-200"
+                            title="Use preset"
+                          >↩</button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-1">
+                          {WEIGHT_PRESETS.map(opt => {
+                            const current = watch(`variants.${idx}.weight`)
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setValue(`variants.${idx}.weight`, opt)}
+                                className={`px-2 py-1 text-xs border rounded-none transition-colors ${
+                                  current === opt
+                                    ? 'bg-spice-brown text-cream border-spice-brown'
+                                    : 'border-gray-200 hover:border-spice-brown text-gray-600'
+                                }`}
+                              >{opt}</button>
+                            )
+                          })}
+                          <button
+                            type="button"
+                            onClick={() => setCustomWeightMode(prev => ({ ...prev, [field.id]: true }))}
+                            className="px-2 py-1 text-xs border border-dashed border-gray-300 text-gray-400 hover:border-spice-brown hover:text-spice-brown rounded-none"
+                            title="Enter custom weight"
+                          >+ Custom</button>
+                        </div>
+                      )}
                     </div>
 
                     {/* Price */}
@@ -348,6 +402,22 @@ const ProductForm = () => {
           {/* RIGHT: Sidebar Operations (Media, Status) */}
           <div className="lg:col-span-4 flex flex-col gap-8">
             
+            {/* Category */}
+            <div className="bg-white border border-cream-dark p-6 rounded-none flex flex-col gap-4">
+              <h3 className="font-serif text-xs uppercase tracking-wider text-ochre border-b border-gray-100 pb-2">
+                Category
+              </h3>
+              <select
+                {...register('category_id')}
+                className="w-full border border-gray-200 p-2.5 text-sm bg-white outline-none focus:border-spice-brown rounded-none"
+              >
+                <option value="">— Uncategorised —</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
             {/* Status and Visibility */}
             <div className="bg-white border border-cream-dark p-6 rounded-none flex flex-col gap-4">
               <h3 className="font-serif text-xs uppercase tracking-wider text-ochre border-b border-gray-100 pb-2">

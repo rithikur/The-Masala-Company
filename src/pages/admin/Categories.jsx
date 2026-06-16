@@ -4,6 +4,30 @@ import { HiOutlineTag, HiOutlinePlus, HiOutlinePencil, HiOutlineTrash } from 're
 import api from '../../services/api'
 import { toast } from 'react-hot-toast'
 
+const ALL_PRODUCTS = [
+  { id: '1', name: 'Royal Garam Masala' },
+  { id: '2', name: 'Erode Single-Origin Turmeric' },
+  { id: '3', name: 'Green Cardamom Pods' },
+  { id: '4', name: 'Ceylon Cinnamon Quills' },
+  { id: '5', name: 'Kashmiri Lal Mirch' },
+  { id: '6', name: 'Tellicherry Black Peppercorns' },
+  { id: '7', name: 'Chai Masala Blend' },
+  { id: '8', name: 'Kashmir Saffron' },
+  { id: '9', name: 'Cumin Seeds' },
+  { id: '10', name: 'Fennel Seeds' },
+  { id: '11', name: 'Spice Starter Gift Box' },
+  { id: '12', name: "Chef's Collection Gift Set" },
+]
+
+const CATEGORY_PRODUCTS = {
+  'c1': ['3','4','6'],
+  'c2': ['2','5'],
+  'c3': ['1','7'],
+  'c4': ['9','10'],
+  'c5': ['8'],
+  'c6': ['11','12'],
+}
+
 const MOCK_CATEGORIES = [
   { id: 'c1', name: 'Whole Spices', slug: 'whole-spices', description: 'Pure, hand-picked whole spices from origin farms.', product_count: 3 },
   { id: 'c2', name: 'Ground Spices', slug: 'ground-spices', description: 'Stone-cold-milled for maximum freshness and aroma.', product_count: 3 },
@@ -20,6 +44,8 @@ const Categories = () => {
   const [editingCategory, setEditingCategory] = useState(null)
   const [formData, setFormData] = useState({ name: '', slug: '', description: '' })
   const [submitting, setSubmitting] = useState(false)
+  // Product assignments per category
+  const [categoryProducts, setCategoryProducts] = useState(CATEGORY_PRODUCTS)
 
   const fetchCategories = async () => {
     setLoading(true)
@@ -180,6 +206,53 @@ const Categories = () => {
                   </button>
                 </div>
               </form>
+
+              {/* Product assignment — only shown when editing existing category */}
+              {editingCategory && (
+                <div className="mt-6 pt-6 border-t border-cream-dark">
+                  <label className="block text-xs uppercase tracking-wider text-charcoal-soft font-bold mb-3">
+                    Products in this Category
+                  </label>
+                  <div className="grid grid-cols-1 gap-2 max-h-52 overflow-y-auto pr-1">
+                    {ALL_PRODUCTS.map(prod => {
+                      const assigned = (categoryProducts[editingCategory.id] || []).includes(prod.id)
+                      return (
+                        <label
+                          key={prod.id}
+                          className={`flex items-center gap-3 p-2.5 border cursor-pointer transition-colors rounded-none ${
+                            assigned ? 'border-turmeric bg-turmeric/5' : 'border-cream-dark hover:border-gray-300'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={assigned}
+                            onChange={() => {
+                              setCategoryProducts(prev => {
+                                const cur = prev[editingCategory.id] || []
+                                const next = cur.includes(prod.id)
+                                  ? cur.filter(id => id !== prod.id)
+                                  : [...cur, prod.id]
+                                return { ...prev, [editingCategory.id]: next }
+                              })
+                              // Update product_count on the category
+                              setCategories(prevCats => prevCats.map(c => {
+                                if (c.id !== editingCategory.id) return c
+                                const cur = (categoryProducts[editingCategory.id] || [])
+                                const wasThere = cur.includes(prod.id)
+                                return { ...c, product_count: (c.product_count ?? 0) + (wasThere ? -1 : 1) }
+                              }))
+                            }}
+                            className="accent-turmeric"
+                          />
+                          <span className="text-sm text-charcoal-dark font-body">{prod.name}</span>
+                          {assigned && <span className="ml-auto text-[10px] text-turmeric uppercase tracking-wider font-bold">Assigned</span>}
+                        </label>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         </div>
