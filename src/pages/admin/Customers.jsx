@@ -15,14 +15,55 @@ const Customers = () => {
   const [customers, setCustomers] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const getCombinedCustomers = () => {
+    const list = [...MOCK_CUSTOMERS]
+    
+    // 1. Add local registered users
+    try {
+      const localUsers = JSON.parse(localStorage.getItem('masala_local_users') || '[]')
+      localUsers.forEach(u => {
+        if (!list.some(existing => existing.email.toLowerCase() === u.email.toLowerCase())) {
+          list.push({
+            id: u.id || `u-local-${Date.now()}-${Math.random()}`,
+            first_name: u.first_name || '',
+            last_name: u.last_name || '',
+            email: u.email,
+            role: u.role || 'customer',
+            created_at: u.created_at || new Date().toISOString()
+          })
+        }
+      })
+    } catch (_) {}
+
+    // 2. Add email/address profiles from local orders (guests / buyers)
+    try {
+      const localOrders = JSON.parse(localStorage.getItem('masala_local_orders') || '[]')
+      localOrders.forEach(o => {
+        const email = o.shipping_address?.email || o.user?.email
+        if (email && !list.some(existing => existing.email.toLowerCase() === email.toLowerCase())) {
+          list.push({
+            id: `u-order-${o.id}`,
+            first_name: o.shipping_address?.first_name || 'Guest',
+            last_name: o.shipping_address?.last_name || 'Buyer',
+            email: email,
+            role: 'customer (guest)',
+            created_at: o.created_at || new Date().toISOString()
+          })
+        }
+      })
+    } catch (_) {}
+
+    return list
+  }
+
   const fetchCustomers = async () => {
     setLoading(true)
     try {
       const res = await api.get('/api/admin/orders/customers')
       const data = res.data.data || []
-      setCustomers(data.length > 0 ? data : MOCK_CUSTOMERS)
+      setCustomers(data.length > 0 ? data : getCombinedCustomers())
     } catch (err) {
-      setCustomers(MOCK_CUSTOMERS) // silent fallback — no error toast
+      setCustomers(getCombinedCustomers()) // silent fallback
     } finally {
       setLoading(false)
     }

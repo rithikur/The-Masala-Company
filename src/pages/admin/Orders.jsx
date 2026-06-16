@@ -17,8 +17,13 @@ const Orders = () => {
       const res = await api.get('/api/admin/orders')
       setOrders(res.data.data || [])
     } catch (err) {
-      // Backend unavailable — show empty state silently (no error toast)
-      setOrders([])
+      // Backend unavailable — load local orders from localStorage
+      try {
+        const local = JSON.parse(localStorage.getItem('masala_local_orders') || '[]')
+        setOrders(local)
+      } catch (_) {
+        setOrders([])
+      }
     } finally {
       setLoading(false)
     }
@@ -41,11 +46,16 @@ const Orders = () => {
       }
     } catch (err) {
       // Offline fallback
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o))
+      const updatedOrders = orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o)
+      setOrders(updatedOrders)
+      try {
+        localStorage.setItem('masala_local_orders', JSON.stringify(updatedOrders))
+      } catch (_) {}
+      
       if (selectedOrder?.id === orderId) {
         setSelectedOrder(prev => ({ ...prev, status: newStatus }))
       }
-      toast.success(`Simulated update to ${newStatus}`, { id: toastId })
+      toast.success(`Simulated status update to ${newStatus}`, { id: toastId })
     }
   }
 
@@ -128,7 +138,7 @@ const Orders = () => {
                       <td className="py-4 px-6 font-mono text-xs font-semibold text-charcoal-dark">{o.id}</td>
                       <td className="py-4 px-6 font-body">
                         <div>{o.shipping_address?.first_name} {o.shipping_address?.last_name}</div>
-                        <div className="text-xs text-gray-400">{o.user?.email}</div>
+                        <div className="text-xs text-gray-400">{o.user?.email || o.shipping_address?.email}</div>
                       </td>
                       <td className="py-4 px-6 font-['Outfit']">₹{parseFloat(o.total_amount).toFixed(2)}</td>
                       <td className="py-4 px-6">
@@ -206,7 +216,7 @@ const Orders = () => {
                 <div className="font-semibold text-charcoal-dark">
                   {selectedOrder.shipping_address?.first_name} {selectedOrder.shipping_address?.last_name}
                 </div>
-                <div className="text-xs text-gray-500">{selectedOrder.user?.email}</div>
+                <div className="text-xs text-gray-500">{selectedOrder.user?.email || selectedOrder.shipping_address?.email}</div>
                 <div className="text-gray-600 mt-2">
                   <div>{selectedOrder.shipping_address?.address_line}</div>
                   <div>{selectedOrder.shipping_address?.city}, {selectedOrder.shipping_address?.state} {selectedOrder.shipping_address?.postal_code}</div>
@@ -221,8 +231,8 @@ const Orders = () => {
                   {selectedOrder.items?.map((item) => (
                     <div key={item.id} className="flex justify-between items-center py-2 border-b border-gray-50">
                       <div>
-                        <div className="font-semibold text-charcoal-dark">{item.product_variants?.products?.name}</div>
-                        <div className="text-xs text-gray-400">Variant: {item.product_variants?.weight} | Qty: {item.quantity}</div>
+                        <div className="font-semibold text-charcoal-dark">{item.product_variants?.products?.name || item.name || 'Product'}</div>
+                        <div className="text-xs text-gray-400">Variant: {item.product_variants?.weight || item.weight || 'Standard'} | Qty: {item.quantity}</div>
                       </div>
                       <div className="font-serif text-charcoal-dark">
                         ₹{(parseFloat(item.price_at_time) * item.quantity).toFixed(2)}
