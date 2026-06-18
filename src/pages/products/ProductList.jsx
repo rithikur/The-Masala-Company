@@ -7,6 +7,8 @@ import { getProducts } from '../../services/products'
 import { getCategories } from '../../services/categories'
 import { HiHeart, HiOutlineHeart, HiOutlineChevronDown, HiOutlineX } from 'react-icons/hi'
 import useWishlist from '../../hooks/useWishlist'
+import { useAuth } from '../../context/AuthContext'
+import AuthModal from '../../components/common/AuthModal'
 
 // ── Rich mock data — always shown if the backend is unreachable ─────────────
 const MOCK_CATEGORIES = [
@@ -41,6 +43,8 @@ const ProductList = () => {
   const [loading, setLoading] = useState(true)
   const [isSortOpen, setIsSortOpen] = useState(false)
   const { toggleWishlist, isWishlisted } = useWishlist()
+  const { isAuthenticated } = useAuth()
+  const [showAuthModal, setShowAuthModal] = useState(false)
 
   const currentCategory = searchParams.get('category') || ''
   const currentSort = searchParams.get('sort') || 'newest'
@@ -317,8 +321,15 @@ const ProductList = () => {
                           onError={(e) => { e.target.onerror = null; e.target.src = '/images/product_garam_masala.jpg' }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                        <button
-                          onClick={(e) => { e.preventDefault(); toggleWishlist(product) }}
+                         <button
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (!isAuthenticated) {
+                              setShowAuthModal(true)
+                            } else {
+                              toggleWishlist(product)
+                            }
+                          }}
                           className="absolute top-4 right-4 p-3 rounded-full bg-cream/90 backdrop-blur-md shadow-lg text-spice-brown sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 hover:text-turmeric z-10"
                           title={isWishlisted(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
                         >
@@ -357,6 +368,7 @@ const ProductList = () => {
           )}
         </div>
       </div>
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </PageWrapper>
   )
 }

@@ -3,13 +3,7 @@ import AdminLayout from '../../layouts/AdminLayout'
 import api from '../../services/api'
 import { HiOutlineDownload } from 'react-icons/hi'
 
-const MOCK_CUSTOMERS = [
-  { id: 'u1', first_name: 'Priya', last_name: 'Nair', email: 'priya.nair@gmail.com', role: 'customer', created_at: '2026-05-12T10:00:00Z' },
-  { id: 'u2', first_name: 'Arjun', last_name: 'Mehta', email: 'arjun.mehta@outlook.com', role: 'customer', created_at: '2026-05-18T14:30:00Z' },
-  { id: 'u3', first_name: 'Deepa', last_name: 'Krishnan', email: 'deepa.k@yahoo.com', role: 'customer', created_at: '2026-05-22T09:15:00Z' },
-  { id: 'u4', first_name: 'Rahul', last_name: 'Sharma', email: 'rahul.s@gmail.com', role: 'customer', created_at: '2026-06-01T11:45:00Z' },
-  { id: 'u5', first_name: 'Anjali', last_name: 'Pillai', email: 'anjali.pillai@gmail.com', role: 'customer', created_at: '2026-06-08T16:20:00Z' },
-]
+const MOCK_CUSTOMERS = []
 
 const Customers = () => {
   const [customers, setCustomers] = useState([])
