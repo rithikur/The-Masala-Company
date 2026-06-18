@@ -23,6 +23,7 @@ import {
   HiOutlineLogout,
   HiOutlineUser,
   HiOutlineGlobeAlt,
+  HiOutlineRefresh,
 } from 'react-icons/hi'
 import AdminCommandPalette from '../components/admin/AdminCommandPalette'
 
@@ -391,6 +392,16 @@ const AdminLayout = ({ children, title = 'Admin Panel', breadcrumbs = [] }) => {
                 </div>
               </button>
             </div>
+
+            {/* Refresh button */}
+            <button
+              onClick={() => window.location.reload()}
+              className="p-2 rounded-md hover:bg-cream text-charcoal-muted hover:text-spice-brown transition-colors"
+              title="Refresh Data"
+              aria-label="Refresh Data"
+            >
+              <HiOutlineRefresh size={20} />
+            </button>
 
             {/* Notification bell */}
             <div className="relative" ref={notifRef}>
