@@ -199,8 +199,8 @@ const Orders = () => {
                         key={step}
                         onClick={() => handleUpdateStatus(selectedOrder.id, step)}
                         className={`flex-1 text-center py-2 px-1 border transition-all text-[10px] uppercase font-bold tracking-wider rounded-none cursor-pointer ${
-                          isActive ? 'bg-ochre border-ochre text-white' :
-                          isCompleted ? 'bg-charcoal-dark border-charcoal-dark text-cream' : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                          isActive ? 'bg-spice-brown border-spice-brown text-cream' :
+                          isCompleted ? 'bg-spice-brown/10 border-spice-brown/20 text-spice-brown' : 'border-gray-200 text-gray-400 hover:border-gray-300'
                         }`}
                       >
                         {step}
