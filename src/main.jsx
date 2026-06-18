@@ -2,7 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
-import { Toaster } from 'react-hot-toast'
+import { Toaster, ToastBar, toast } from 'react-hot-toast'
+import { HiX } from 'react-icons/hi'
 
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
@@ -47,7 +48,27 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     },
                   },
                 }}
-              />
+              >
+                {(t) => (
+                  <ToastBar toast={t}>
+                    {({ icon, message }) => (
+                      <>
+                        {icon}
+                        {message}
+                        {t.type !== 'loading' && (
+                          <button
+                            onClick={() => toast.dismiss(t.id)}
+                            className="ml-2 hover:opacity-75 transition-opacity p-0.5 text-cream-dark hover:text-turmeric cursor-pointer"
+                            aria-label="Close"
+                          >
+                            <HiX size={14} />
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </ToastBar>
+                )}
+              </Toaster>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
